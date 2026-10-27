@@ -178,13 +178,12 @@
     }
   },
   {
-    "description": "empty objects give classes without fields, keys keep the JSON spelling",
+    "description": "objects that are always empty are generic maps, keys keep the JSON spelling",
     "input": { "meta": {}, "Postal Code": "12500", "2fa": true },
     "expected": {
       "root": "Root",
       "classes": [
-        ["Root", { "meta": "Meta", "Postal Code": "string", "2fa": "boolean" }],
-        ["Meta", {}]
+        ["Root", { "meta": "object", "Postal Code": "string", "2fa": "boolean" }]
       ]
     }
   },
@@ -194,11 +193,13 @@
     "expected": { "root": "Root", "classes": [["Root", { "id": "integer" }]] }
   },
   {
-    "description": "ISO dates, date-times and UUIDs get their own type when every value matches",
+    "description": "ISO dates, RFC 3339 date-times (with time zone) and UUIDs get their own type when every value matches",
     "input": {
       "birthday": "1990-05-17",
       "created_at": "2026-10-20T09:15:00Z",
-      "updated_at": "2026-10-20 09:15:00.123+02:00",
+      "updated_at": "2026-10-20T09:15:00.123+02:00",
+      "local_time": "2026-10-20T09:15:00",
+      "with_space": "2026-10-20 09:15:00Z",
       "id": "550e8400-e29b-41d4-a716-446655440000",
       "events": [{ "at": "2026-10-20T09:15:00Z" }, { "at": null }],
       "mixed": ["2026-10-20", "2026-10-20T09:15:00Z"],
@@ -214,6 +215,8 @@
             "birthday": "date",
             "created_at": "datetime",
             "updated_at": "datetime",
+            "local_time": "string",
+            "with_space": "string",
             "id": "uuid",
             "events": "Event[]",
             "mixed": "string[]",
@@ -264,7 +267,7 @@
     }
   },
   {
-    "description": "objects are merged only when optional and nullable fields match too, never when empty",
+    "description": "objects are merged only when optional and nullable fields match too",
     "input": {
       "a": { "x": 1 },
       "b": [{ "x": 1 }, {}],
@@ -275,12 +278,10 @@
     "expected": {
       "root": "Root",
       "classes": [
-        ["Root", { "a": "A", "b": "BItem[]", "c": "C", "d": "D", "e": "E" }],
+        ["Root", { "a": "A", "b": "BItem[]", "c": "C", "d": "object", "e": "object" }],
         ["A", { "x": "integer" }],
         ["BItem", { "x": "integer (optional)" }],
-        ["C", { "x": "null" }],
-        ["D", {}],
-        ["E", {}]
+        ["C", { "x": "null" }]
       ]
     }
   },

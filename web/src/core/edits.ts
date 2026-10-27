@@ -52,7 +52,10 @@ export function editedField(field: Field, edit: FieldEdit | undefined): Field {
   if (!edit) return field
   const result: Field = { ...field }
   if (edit.name !== undefined && edit.name.trim() !== '') result.name = edit.name.trim()
-  if (edit.type !== undefined) result.type = replaceInnermost(field.type, edit.type)
+  if (edit.type !== undefined) {
+    result.type = replaceInnermost(field.type, edit.type)
+    result.typeEdited = true
+  }
   if (edit.optional !== undefined) result.optional = edit.optional
   if (edit.nullable !== undefined) result.nullable = edit.nullable
   return result

@@ -4,7 +4,7 @@ import { childPath, type ClassDef, type Field, type Observed, type PrimitiveType
 
 export interface AnalyzeOptions {
   rootName?: string
-  /** Strings that are all ISO 8601 dates, date-times or UUIDs get that type */
+  /** Strings that are all ISO 8601 dates, RFC 3339 date-times or UUIDs get that type */
   detectFormats?: boolean
   /** Objects with exactly the same fields become one class (billing_address and shipping_address → Address) */
   mergeIdentical?: boolean
@@ -36,7 +36,9 @@ type Kind =
 
 const FORMATS: [StringFormat, RegExp][] = [
   ['date', /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/],
-  ['datetime', /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])[T ]([01]\d|2[0-3]):[0-5]\d(:[0-5]\d(\.\d+)?)?(Z|[+-]([01]\d|2[0-3]):?[0-5]\d)?$/],
+  // RFC 3339, the profile of ISO 8601 that every language can read (Java's OffsetDateTime, Go's
+  // time.Time, Zod...): T separator, seconds and a time zone
+  ['datetime', /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(\.\d+)?(Z|[+-]([01]\d|2[0-3]):[0-5]\d)$/],
   ['uuid', /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/],
 ]
 
@@ -78,7 +80,8 @@ export function analyze(value: JsonValue, options: AnalyzeOptions = {}): Schema 
     if (kinds.length === 0) return { kind: 'primitive', name: shape.kinds.null ? 'null' : 'any' }
     if (kinds.length === 2 && kinds.includes('integer') && kinds.includes('float')) return { kind: 'primitive', name: 'float' }
     if (kinds.length > 1) return { kind: 'primitive', name: 'any' }
-    if (kinds[0] === 'object') return { kind: 'object', object: shape.object! }
+    // An object that is always empty says nothing about its fields: a generic map, not an empty class
+    if (kinds[0] === 'object') return shape.object!.fields.size > 0 ? { kind: 'object', object: shape.object! } : { kind: 'primitive', name: 'object' }
     if (kinds[0] === 'array') return { kind: 'array', items: shape.array! }
     if (kinds[0] === 'string' && detectFormats) {
       const format = FORMATS.find(([name]) => shape.formats[name] === shape.kinds.string)
@@ -139,8 +142,6 @@ export function analyze(value: JsonValue, options: AnalyzeOptions = {}): Schema 
     }
     for (let index = nodes.length - 1; index >= 0; index--) {
       const { object } = nodes[index]
-      // Empty objects ({}) say nothing about what they are: never merged
-      if (object.fields.size === 0) continue
       const signature = JSON.stringify(
         [...object.fields].map(([key, shape]) => [key, typeSignature(shape), shape.count < object.count, isNullable(shape)]),
       )

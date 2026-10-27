@@ -28,6 +28,8 @@ export interface Field {
    * innermost items. Only facts of the JSON: edits do not change them. */
   observed: Observed
   itemsObserved?: Observed
+  /** The type was chosen by the user, not detected */
+  typeEdited?: boolean
 }
 
 export interface ClassDef {

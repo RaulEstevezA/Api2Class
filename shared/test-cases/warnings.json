@@ -10,12 +10,14 @@
     "expected": [{ "code": "mixedTypes", "class": "Root", "key": "values", "counts": [["integer", 1], ["string", 1], ["boolean", 1]] }]
   },
   {
-    "description": "empty arrays and fields that are only null",
-    "input": { "warnings": [], "previous": null, "matrix": [[]] },
+    "description": "empty arrays, empty objects and fields that are only null",
+    "input": { "warnings": [], "previous": null, "matrix": [[]], "extra": {}, "items": [{ "meta": {} }, { "meta": null }] },
     "expected": [
       { "code": "emptyArray", "class": "Root", "key": "warnings" },
       { "code": "onlyNull", "class": "Root", "key": "previous" },
-      { "code": "emptyArray", "class": "Root", "key": "matrix" }
+      { "code": "emptyArray", "class": "Root", "key": "matrix" },
+      { "code": "emptyObject", "class": "Root", "key": "extra" },
+      { "code": "emptyObject", "class": "Item", "key": "meta" }
     ]
   },
   {
@@ -25,8 +27,8 @@
   },
   {
     "description": "a field whose type was set by hand no longer warns",
-    "input": { "id": [1, "2"], "previous": null },
-    "edits": { "classes": {}, "fields": { "#/id": { "type": "string" }, "#/previous": { "type": "string" } } },
+    "input": { "id": [1, "2"], "previous": null, "address": { "city": "Vinaros" } },
+    "edits": { "classes": {}, "fields": { "#/id": { "type": "string" }, "#/previous": { "type": "string" }, "#/address": { "type": "object" } } },
     "expected": []
   }
 ]
