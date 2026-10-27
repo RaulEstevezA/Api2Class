@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "$ref": "#/$defs/Root",
+  "$defs": {
+    "Root": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "address": {
+          "$ref": "#/$defs/Address"
+        },
+        "orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Order"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "active",
+        "address",
+        "orders"
+      ]
+    },
+    "Address": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "city",
+        "postal_code"
+      ]
+    },
+    "Order": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "total"
+      ]
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "$ref": "#/$defs/Root",
+  "$defs": {
+    "Root": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/User"
+          }
+        }
+      },
+      "required": [
+        "users"
+      ]
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "Postal Code": {
+          "type": "string"
+        },
+        "class": {
+          "type": "string"
+        },
+        "2fa": {
+          "type": "boolean"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "deleted_at": {
+          "type": "null"
+        },
+        "manager": {
+          "$ref": "#/$defs/Manager"
+        }
+      },
+      "required": [
+        "userId",
+        "phone",
+        "Postal Code",
+        "class",
+        "2fa",
+        "tags",
+        "deleted_at"
+      ]
+    },
+    "Manager": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "user_id"
+      ]
+    }
+  }
+}

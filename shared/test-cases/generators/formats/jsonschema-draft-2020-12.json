@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "$ref": "#/$defs/Root",
+  "$defs": {
+    "Root": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "birthday": {
+          "type": "string",
+          "format": "date"
+        },
+        "billing_address": {
+          "$ref": "#/$defs/Address"
+        },
+        "shipping_address": {
+          "$ref": "#/$defs/Address"
+        },
+        "payments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Payment"
+          }
+        },
+        "metadata": {
+          "$ref": "#/$defs/Metadata"
+        }
+      },
+      "required": [
+        "id",
+        "created_at",
+        "birthday",
+        "billing_address",
+        "shipping_address",
+        "payments",
+        "metadata"
+      ]
+    },
+    "Address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "street",
+        "city"
+      ]
+    },
+    "Payment": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number"
+        },
+        "paid_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "amount",
+        "paid_at"
+      ]
+    },
+    "Metadata": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source"
+      ]
+    }
+  }
+}

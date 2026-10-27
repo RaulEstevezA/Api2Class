@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/Root"
+  },
+  "$defs": {
+    "Root": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "value": {},
+        "meta": {
+          "type": "object"
+        },
+        "matrix": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Point"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "value",
+        "meta",
+        "matrix",
+        "points"
+      ]
+    },
+    "Point": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ]
+    }
+  }
+}
