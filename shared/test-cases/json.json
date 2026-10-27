@@ -17,8 +17,8 @@
     },
     {
       "description": "nested objects and arrays",
-      "input": "{\"address\": {\"city\": \"Vinaros\"}, \"orders\": [{\"id\": 101}], \"tags\": []}",
-      "expected": { "address": { "city": "Vinaros" }, "orders": [{ "id": "integer:101" }], "tags": [] }
+      "input": "{\"address\": {\"city\": \"Villaluna\"}, \"orders\": [{\"id\": 101}], \"tags\": []}",
+      "expected": { "address": { "city": "Villaluna" }, "orders": [{ "id": "integer:101" }], "tags": [] }
     },
     {
       "description": "string escapes",
@@ -104,8 +104,8 @@
     },
     {
       "description": "leading zero",
-      "input": "{\"zip\": 012500}",
-      "expected": { "code": "invalidNumber", "line": 1, "column": 10, "found": "1" }
+      "input": "{\"zip\": 099001}",
+      "expected": { "code": "invalidNumber", "line": 1, "column": 10, "found": "9" }
     },
     {
       "description": "number with a trailing dot",

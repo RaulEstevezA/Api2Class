@@ -1,9 +1,9 @@
 [
   {
     "description": "nested objects and arrays",
-    "input": "{\"id\":15,\"address\":{\"city\":\"Vinaros\"},\"orders\":[{\"id\":101,\"total\":29.95}],\"tags\":[\"a\",\"b\"]}",
-    "formatted": "{\n  \"id\": 15,\n  \"address\": {\n    \"city\": \"Vinaros\"\n  },\n  \"orders\": [\n    {\n      \"id\": 101,\n      \"total\": 29.95\n    }\n  ],\n  \"tags\": [\n    \"a\",\n    \"b\"\n  ]\n}",
-    "minified": "{\"id\":15,\"address\":{\"city\":\"Vinaros\"},\"orders\":[{\"id\":101,\"total\":29.95}],\"tags\":[\"a\",\"b\"]}"
+    "input": "{\"id\":15,\"address\":{\"city\":\"Villaluna\"},\"orders\":[{\"id\":101,\"total\":29.95}],\"tags\":[\"a\",\"b\"]}",
+    "formatted": "{\n  \"id\": 15,\n  \"address\": {\n    \"city\": \"Villaluna\"\n  },\n  \"orders\": [\n    {\n      \"id\": 101,\n      \"total\": 29.95\n    }\n  ],\n  \"tags\": [\n    \"a\",\n    \"b\"\n  ]\n}",
+    "minified": "{\"id\":15,\"address\":{\"city\":\"Villaluna\"},\"orders\":[{\"id\":101,\"total\":29.95}],\"tags\":[\"a\",\"b\"]}"
   },
   {
     "description": "numbers keep how they were written",

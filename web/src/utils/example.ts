@@ -5,8 +5,8 @@ export const EXAMPLE_JSON = `{
   "email": "raul@example.com",
   "active": true,
   "address": {
-    "city": "Vinaros",
-    "postal_code": "12500"
+    "city": "Villaluna",
+    "postal_code": "99001"
   },
   "orders": [
     {

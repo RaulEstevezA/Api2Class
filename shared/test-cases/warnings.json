@@ -27,7 +27,7 @@
   },
   {
     "description": "a field whose type was set by hand no longer warns",
-    "input": { "id": [1, "2"], "previous": null, "address": { "city": "Vinaros" } },
+    "input": { "id": [1, "2"], "previous": null, "address": { "city": "Villaluna" } },
     "edits": { "classes": {}, "fields": { "#/id": { "type": "string" }, "#/previous": { "type": "string" }, "#/address": { "type": "object" } } },
     "expected": []
   }

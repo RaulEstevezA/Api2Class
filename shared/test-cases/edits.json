@@ -4,7 +4,7 @@
     "input": {
       "id": 15,
       "first_name": "Raul",
-      "address": { "city": "Vinaros", "zip": "12500" },
+      "address": { "city": "Villaluna", "zip": "99001" },
       "orders": [{ "id": 101, "total": 29.95 }]
     },
     "edits": {
@@ -50,7 +50,7 @@
   },
   {
     "description": "edits of a class shared by several objects apply wherever it is used",
-    "input": { "billing_address": { "city": "Vinaros" }, "shipping_address": { "city": "Castellon" } },
+    "input": { "billing_address": { "city": "Villaluna" }, "shipping_address": { "city": "Puerto Claro" } },
     "edits": { "classes": { "#/billing_address": { "name": "PostalAddress" } }, "fields": { "#/billing_address/city": { "name": "town" } } },
     "expected": {
       "root": "Root",

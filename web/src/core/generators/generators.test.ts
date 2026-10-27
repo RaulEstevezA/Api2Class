@@ -47,7 +47,7 @@ it('there are generator cases', () => {
 })
 
 describe.each(generators)('$label', (generator) => {
-  const schema = schemaOf('{"id": 1, "address": {"city": "Vinaros"}, "orders": [{"total": 1.5}]}', 'UserProfile')
+  const schema = schemaOf('{"id": 1, "address": {"city": "Villaluna"}, "orders": [{"total": 1.5}]}', 'UserProfile')
 
   it('names the file after the root class', () => {
     const [file] = generator.generate(schema, DEFAULT_SETTINGS).files

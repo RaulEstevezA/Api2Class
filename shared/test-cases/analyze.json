@@ -5,7 +5,7 @@
       "id": 15,
       "name": "Raul",
       "active": true,
-      "address": { "city": "Vinaros", "postal_code": "12500" },
+      "address": { "city": "Villaluna", "postal_code": "99001" },
       "orders": [{ "id": 101, "total": 29.95 }]
     },
     "expected": {
@@ -34,8 +34,8 @@
     "input": {
       "users": [
         { "id": 1, "email": "ana@example.com", "phone": null },
-        { "id": 2, "phone": "600123456" },
-        { "id": 3, "email": "luis@example.com", "phone": "600654321", "nickname": "lu" }
+        { "id": 2, "phone": "555010001" },
+        { "id": 3, "email": "luis@example.com", "phone": "555010002", "nickname": "lu" }
       ]
     },
     "expected": {
@@ -135,8 +135,8 @@
     "description": "classes are named level by level and repeated names get the parent name",
     "input": {
       "address": { "street": "Mayor" },
-      "company": { "name": "ACME", "address": { "city": "Vinaros" } },
-      "branch": { "address": { "zip": "12500" } },
+      "company": { "name": "ACME", "address": { "city": "Villaluna" } },
+      "branch": { "address": { "zip": "99001" } },
       "other": { "branch": { "address": { "country": "ES" } } }
     },
     "expected": {
@@ -179,7 +179,7 @@
   },
   {
     "description": "objects that are always empty are generic maps, keys keep the JSON spelling",
-    "input": { "meta": {}, "Postal Code": "12500", "2fa": true },
+    "input": { "meta": {}, "Postal Code": "99001", "2fa": true },
     "expected": {
       "root": "Root",
       "classes": [
@@ -237,10 +237,10 @@
   {
     "description": "objects with the same fields share one class named after the words their names share",
     "input": {
-      "billing_address": { "street": "Mayor 12", "city": "Vinaros" },
-      "shipping_address": { "street": "Mar 3", "city": "Castellon" },
-      "owner": { "name": "Ana", "address": { "street": "Sol 1", "city": "Benicarlo" } },
-      "manager": { "name": "Luis", "phone": "600123456", "address": { "street": "Luna 2", "city": "Peniscola" } }
+      "billing_address": { "street": "Pinos 7", "city": "Villaluna" },
+      "shipping_address": { "street": "Faro 21", "city": "Puerto Claro" },
+      "owner": { "name": "Ana", "address": { "street": "Roble 4", "city": "Monteverde" } },
+      "manager": { "name": "Luis", "phone": "555010001", "address": { "street": "Olmo 9", "city": "Valdeoro" } }
     },
     "expected": {
       "root": "Root",
@@ -289,8 +289,8 @@
     "description": "merging can be turned off",
     "options": { "mergeIdentical": false },
     "input": {
-      "billing_address": { "street": "Mayor 12" },
-      "shipping_address": { "street": "Mar 3" }
+      "billing_address": { "street": "Pinos 7" },
+      "shipping_address": { "street": "Faro 21" }
     },
     "expected": {
       "root": "Root",
