@@ -48,15 +48,10 @@
   font-size: 1.05rem;
 }
 
-.intro__description,
-.intro__privacy {
+.intro__description {
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.6;
-}
-
-.intro__privacy {
-  color: var(--success);
 }
 
 @media (max-width: 600px) {

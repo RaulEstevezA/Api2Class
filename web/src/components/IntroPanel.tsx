@@ -15,9 +15,6 @@ export function IntroPanel() {
         </div>
         <p className="intro__subtitle">{t.tagline}</p>
         <p className="intro__description">{t.introDescription}</p>
-        <p className="intro__privacy" role="note">
-          {t.privacyNote}
-        </p>
       </div>
     </section>
   )

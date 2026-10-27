@@ -30,7 +30,6 @@ const en = {
   introDescription:
     'Paste a JSON response from an API (from Postman, the browser or a log), review and edit the structure detected, and get ready-to-use models for Python, Java, TypeScript, C#, Kotlin, Dart, Swift, Go, PHP, Rust or Scala, or a JSON Schema or Smithy definition.',
   privacyShort: 'Processed locally',
-  privacyNote: 'Processed locally in your browser. Your API data never leaves your device.',
   introCode: 'Source code',
   introAllTools: 'All tools',
   downloadDesktop: 'Download for desktop',
@@ -153,7 +152,6 @@ const es: Messages = {
   introDescription:
     'Pega una respuesta JSON de una API (de Postman, del navegador o de un log), revisa y edita la estructura detectada, y obtén modelos listos para usar en Python, Java, TypeScript, C#, Kotlin, Dart, Swift, Go, PHP, Rust o Scala, o una definición en JSON Schema o Smithy.',
   privacyShort: 'Procesado en local',
-  privacyNote: 'Se procesa en tu navegador. Los datos de tu API no salen de tu dispositivo.',
   introCode: 'Código fuente',
   introAllTools: 'Todas las herramientas',
   downloadDesktop: 'Descargar para escritorio',
