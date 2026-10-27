@@ -45,8 +45,8 @@ class StructurePanel(Pane):
         options = section()
         # One under the other, as in the web: side by side they do not fit in a narrow pane
         row = QVBoxLayout(options)
-        row.setContentsMargins(16, 0, 16, 10)
-        row.setSpacing(6)
+        row.setContentsMargins(16, 2, 16, 12)
+        row.setSpacing(12)
         self.detect_formats = QCheckBox()
         self.merge_identical = QCheckBox()
         for box in (self.detect_formats, self.merge_identical):
