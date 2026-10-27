@@ -4,6 +4,8 @@ import { AppFooter } from './components/AppFooter.tsx'
 import { AppHeader } from './components/AppHeader.tsx'
 import { IntroPanel } from './components/IntroPanel.tsx'
 import { JsonInputPanel } from './components/JsonInputPanel.tsx'
+import { StructureTree } from './components/StructureTree.tsx'
+import { analyze } from './core/analyze.ts'
 import { parseJson } from './core/json.ts'
 
 function App() {
@@ -12,6 +14,7 @@ function App() {
   // Large responses are parsed after the keystroke is painted, so typing stays smooth
   const deferredInput = useDeferredValue(input)
   const parsed = useMemo(() => parseJson(deferredInput), [deferredInput])
+  const schema = useMemo(() => (parsed.ok ? analyze(parsed.value) : null), [parsed])
 
   return (
     <div className="app">
@@ -20,6 +23,7 @@ function App() {
         <IntroPanel />
         <div className="workspace">
           <JsonInputPanel value={input} onChange={setInput} result={parsed} />
+          <StructureTree schema={schema} />
         </div>
       </main>
       <AppFooter />

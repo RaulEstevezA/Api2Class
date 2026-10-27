@@ -9,6 +9,11 @@ describe('messages', () => {
     }
   })
 
+  it('use singular for one', () => {
+    expect(messages.en.structureSummary(1, 1)).toBe('1 class · 1 field')
+    expect(messages.es.structureSummary(3, 12)).toBe('3 clases · 12 campos')
+  })
+
   it('give a hint for the usual mistakes when pasting JSON', () => {
     expect(messages.en.jsonError.unexpectedCharacter("'")).toContain('double quotes')
     expect(messages.es.jsonError.unexpectedCharacter('/')).toContain('comentarios')
