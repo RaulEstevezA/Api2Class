@@ -94,7 +94,7 @@ El código esperado también se ha ejecutado con las herramientas reales de cada
 ## Privacidad
 
 - No hay servidor ni llamadas a APIs: el JSON se analiza y el código se genera en memoria, y las descargas se crean en el navegador.
-- No hay analítica ni cookies. Ni el JSON pegado ni las ediciones se guardan, ni siquiera en el navegador; lo único que se guarda en el `localStorage` son preferencias: idioma de la interfaz, tema, lenguaje de programación, opciones y nombres.
+- No hay analítica ni cookies. Ni el JSON pegado ni las ediciones se guardan, ni siquiera en el navegador; lo único que se guarda en el `localStorage` son preferencias: idioma de la interfaz, lenguaje de programación, opciones y nombres.
 
 ## Límites actuales
 

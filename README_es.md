@@ -99,7 +99,7 @@ Cada lenguaje incluye un ejemplo de uso. El código se puede copiar, descargar c
 
 ### Interfaz
 
-Tres paneles (JSON, estructura, código) que pasan a ser pestañas en pantallas estrechas, tema oscuro, claro o del sistema, e inglés o castellano.
+Tres paneles (JSON, estructura, código) que pasan a ser pestañas en pantallas estrechas, el estilo oscuro de la web personal, e inglés o castellano.
 
 ## Versiones
 

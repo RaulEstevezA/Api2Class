@@ -94,7 +94,7 @@ The expected code has also been run with each language's real tools, outside thi
 ## Privacy
 
 - There is no server and no API calls: the JSON is analyzed and the code generated in memory, and downloads are created in the browser.
-- No analytics or cookies. The pasted JSON and the edits are not saved, not even in the browser; the only things kept in `localStorage` are preferences: interface language, theme, programming language, options and naming.
+- No analytics or cookies. The pasted JSON and the edits are not saved, not even in the browser; the only things kept in `localStorage` are preferences: interface language, programming language, options and naming.
 
 ## Current limits
 

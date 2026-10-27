@@ -99,7 +99,7 @@ Every language comes with a usage example. The code can be copied, downloaded as
 
 ### Interface
 
-Three panes (JSON, structure, code) that become tabs on narrow screens, dark, light or system theme, and English or Spanish.
+Three panes (JSON, structure, code) that become tabs on narrow screens, the portfolio's dark style, and English or Spanish.
 
 ## Versions
 
