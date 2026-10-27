@@ -2,11 +2,12 @@
 
 from .csharp import CSHARP
 from .java import JAVA
+from .kotlin import KOTLIN
 from .python import PYTHON
 from .types import Generator
 from .typescript import TYPESCRIPT
 
-GENERATORS: list[Generator] = [PYTHON, JAVA, TYPESCRIPT, CSHARP]
+GENERATORS: list[Generator] = [PYTHON, JAVA, TYPESCRIPT, CSHARP, KOTLIN]
 
 
 def find_generator(generator_id: str) -> Generator:
