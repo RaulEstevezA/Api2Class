@@ -2,9 +2,10 @@ import { describe, expect, it } from 'vitest'
 import { analyze } from '../analyze.ts'
 import { parseJson } from '../json.ts'
 import { generators } from './index.ts'
+import { DEFAULT_SETTINGS } from './types.ts'
 
 // shared/test-cases/generators/<case>/input.json and one expected file per language and style:
-// python-dataclass.py, java-pojo.java...
+// python-dataclass.py, java-pojo.java... (other options keep their default)
 const files = import.meta.glob<string>('../../../../shared/test-cases/generators/*/*', {
   query: '?raw',
   import: 'default',
@@ -18,31 +19,49 @@ for (const [path, content] of Object.entries(files)) {
   caseFiles.get(caseName)!.set(fileName, content)
 }
 
-const targets = generators.flatMap((generator) => generator.styles.map((style) => ({ generator, style })))
+const targets = generators.flatMap((generator) =>
+  generator.options[0].choices.map((style) => ({ generator, style: style.id, name: `${generator.id}-${style.id}` })),
+)
+
+function schemaOf(text: string, rootName?: string) {
+  const parsed = parseJson(text)
+  if (!parsed.ok) throw new Error('Invalid input')
+  return analyze(parsed.value, { rootName })
+}
 
 describe.each([...caseFiles])('%s', (_caseName, contents) => {
-  const parsed = parseJson(contents.get('input.json') ?? '')
-  if (!parsed.ok) throw new Error('Invalid input.json')
-  const schema = analyze(parsed.value)
+  const schema = schemaOf(contents.get('input.json') ?? '')
 
-  it.each(targets.map((target) => ({ ...target, name: `${target.generator.id}-${target.style.id}` })))(
-    '$name',
-    ({ generator, style, name }) => {
-      const { fileName, code } = generator.generate(schema, { style: style.id })
-      const expected = contents.get(name + fileName.slice(fileName.lastIndexOf('.')))
-      expect(expected, `missing expected file ${name}`).toBeDefined()
-      expect(code).toBe(expected)
-    },
-  )
+  it.each(targets)('$name', ({ generator, style, name }) => {
+    const { files } = generator.generate(schema, { ...DEFAULT_SETTINGS, options: { style } })
+    expect(files).toHaveLength(1)
+    const { name: fileName, code } = files[0]
+    const expected = contents.get(name + fileName.slice(fileName.lastIndexOf('.')))
+    expect(expected, `missing expected file ${name}`).toBeDefined()
+    expect(code).toBe(expected)
+  })
 })
 
 it('there are generator cases', () => {
   expect(caseFiles.size).toBeGreaterThan(0)
 })
 
-it('names the file after the root class', () => {
-  const parsed = parseJson('{"id": 1}')
-  if (!parsed.ok) throw new Error('Invalid input')
-  const fileNames = generators.map((generator) => generator.generate(analyze(parsed.value, { rootName: 'UserProfile' }), { style: generator.styles[0].id }).fileName)
-  expect(fileNames).toEqual(['user_profile.py', 'UserProfile.java', 'UserProfile.ts'])
+describe.each(generators)('$label', (generator) => {
+  const schema = schemaOf('{"id": 1, "address": {"city": "Vinaros"}, "orders": [{"total": 1.5}]}', 'UserProfile')
+
+  it('names the file after the root class', () => {
+    const [file] = generator.generate(schema, DEFAULT_SETTINGS).files
+    expect(file.name.replace(/\.\w+$/, '').replace(/[_-]/g, '').toLowerCase()).toBe('userprofile')
+  })
+
+  it.runIf(generator.supportsMultipleFiles)('can write one file per class', () => {
+    const { files } = generator.generate(schema, { ...DEFAULT_SETTINGS, multipleFiles: true })
+    expect(files).toHaveLength(3)
+    expect(new Set(files.map((file) => file.name)).size).toBe(3)
+  })
+
+  it('every option has choices and the style comes first', () => {
+    expect(generator.options[0].id).toBe('style')
+    for (const option of generator.options) expect(option.choices.length).toBeGreaterThan(0)
+  })
 })
