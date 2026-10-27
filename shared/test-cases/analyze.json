@@ -1,0 +1,196 @@
+[
+  {
+    "description": "user with a nested object and an array of objects",
+    "input": {
+      "id": 15,
+      "name": "Raul",
+      "active": true,
+      "address": { "city": "Vinaros", "postal_code": "12500" },
+      "orders": [{ "id": 101, "total": 29.95 }]
+    },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        ["Root", { "id": "integer", "name": "string", "active": "boolean", "address": "Address", "orders": "Order[]" }],
+        ["Address", { "city": "string", "postal_code": "string" }],
+        ["Order", { "id": "integer", "total": "float" }]
+      ]
+    }
+  },
+  {
+    "description": "array items are named in singular",
+    "input": { "users": [{ "id": 1, "name": "Ana" }], "categories": [{ "id": 2 }] },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        ["Root", { "users": "User[]", "categories": "Category[]" }],
+        ["User", { "id": "integer", "name": "string" }],
+        ["Category", { "id": "integer" }]
+      ]
+    }
+  },
+  {
+    "description": "fields missing from some items are optional, null in some are nullable",
+    "input": {
+      "users": [
+        { "id": 1, "email": "ana@example.com", "phone": null },
+        { "id": 2, "phone": "600123456" },
+        { "id": 3, "email": "luis@example.com", "phone": "600654321", "nickname": "lu" }
+      ]
+    },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        ["Root", { "users": "User[]" }],
+        [
+          "User",
+          {
+            "id": "integer",
+            "email": "string (optional)",
+            "phone": "string | null",
+            "nickname": "string (optional)"
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "description": "integers mixed with floats are floats",
+    "input": { "prices": [{ "amount": 10 }, { "amount": 9.5 }] },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        ["Root", { "prices": "Price[]" }],
+        ["Price", { "amount": "float" }]
+      ]
+    }
+  },
+  {
+    "description": "a number written with decimals is a float even if it is whole",
+    "inputText": "{\"total\": 30.0, \"count\": 30}",
+    "expected": { "root": "Root", "classes": [["Root", { "total": "float", "count": "integer" }]] }
+  },
+  {
+    "description": "incompatible types become any, values only ever null stay null",
+    "input": { "value": [1, "one", true], "mixed": [{ "x": 1 }, { "x": "1" }], "deleted_at": null },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        ["Root", { "value": "any[]", "mixed": "MixedItem[]", "deleted_at": "null" }],
+        ["MixedItem", { "x": "any" }]
+      ]
+    }
+  },
+  {
+    "description": "arrays of primitives, empty arrays, nested arrays and null items",
+    "input": {
+      "tags": ["a", "b"],
+      "scores": [1, 2.5],
+      "empty": [],
+      "matrix": [[1, 2], [3]],
+      "names": ["Ana", null],
+      "points": [[{ "x": 1, "y": 2 }]]
+    },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        [
+          "Root",
+          {
+            "tags": "string[]",
+            "scores": "float[]",
+            "empty": "any[]",
+            "matrix": "integer[][]",
+            "names": "(string | null)[]",
+            "points": "Point[][]"
+          }
+        ],
+        ["Point", { "x": "integer", "y": "integer" }]
+      ]
+    }
+  },
+  {
+    "description": "a top-level array merges its items into one class",
+    "input": [{ "id": 1, "title": "A" }, { "id": 2 }],
+    "expected": { "root": "Root[]", "classes": [["Root", { "id": "integer", "title": "string (optional)" }]] }
+  },
+  {
+    "description": "a top-level primitive or array of primitives has no classes",
+    "input": [1, 2, 3],
+    "expected": { "root": "integer[]", "classes": [] }
+  },
+  {
+    "description": "the root name can be chosen",
+    "rootName": "User",
+    "input": { "id": 1, "profile": { "bio": "hi" } },
+    "expected": {
+      "root": "User",
+      "classes": [
+        ["User", { "id": "integer", "profile": "Profile" }],
+        ["Profile", { "bio": "string" }]
+      ]
+    }
+  },
+  {
+    "description": "classes are named level by level and repeated names get the parent name",
+    "input": {
+      "address": { "street": "Mayor" },
+      "company": { "name": "ACME", "address": { "city": "Vinaros" } },
+      "branch": { "address": { "zip": "12500" } },
+      "other": { "branch": { "address": { "country": "ES" } } }
+    },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        ["Root", { "address": "Address", "company": "Company", "branch": "Branch", "other": "Other" }],
+        ["Address", { "street": "string" }],
+        ["Company", { "name": "string", "address": "CompanyAddress" }],
+        ["Branch", { "address": "BranchAddress" }],
+        ["Other", { "branch": "OtherBranch" }],
+        ["CompanyAddress", { "city": "string" }],
+        ["BranchAddress", { "zip": "string" }],
+        ["OtherBranch", { "address": "OtherBranchAddress" }],
+        ["OtherBranchAddress", { "country": "string" }]
+      ]
+    }
+  },
+  {
+    "description": "a nested object with the root name gets the root as prefix",
+    "input": { "root": { "id": 1 } },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        ["Root", { "root": "RootRoot" }],
+        ["RootRoot", { "id": "integer" }]
+      ]
+    }
+  },
+  {
+    "description": "an object that is sometimes null is a nullable class",
+    "input": { "items": [{ "parent": null }, { "parent": { "id": 1 } }] },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        ["Root", { "items": "Item[]" }],
+        ["Item", { "parent": "Parent | null" }],
+        ["Parent", { "id": "integer" }]
+      ]
+    }
+  },
+  {
+    "description": "empty objects give classes without fields, keys keep the JSON spelling",
+    "input": { "meta": {}, "Postal Code": "12500", "2fa": true },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        ["Root", { "meta": "Meta", "Postal Code": "string", "2fa": "boolean" }],
+        ["Meta", {}]
+      ]
+    }
+  },
+  {
+    "description": "a repeated key counts once, with its last value",
+    "inputText": "{\"id\": \"a\", \"id\": 1}",
+    "expected": { "root": "Root", "classes": [["Root", { "id": "integer" }]] }
+  }
+]
