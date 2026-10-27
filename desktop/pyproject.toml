@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "api2class"
-version = "0.1.0"
+version = "0.1.1"
 description = "Desktop tool that turns JSON API responses into typed models for many languages, locally."
 readme = "README_en.md"
 license = "MIT"
