@@ -1,0 +1,15 @@
+{
+  "id": 15,
+  "name": "Raul",
+  "active": true,
+  "address": {
+    "city": "Vinaros",
+    "postal_code": "12500"
+  },
+  "orders": [
+    {
+      "id": 101,
+      "total": 29.95
+    }
+  ]
+}

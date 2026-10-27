@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "userId": 1,
+      "email": "ana@example.com",
+      "phone": null,
+      "Postal Code": "12500",
+      "class": "premium",
+      "2fa": true,
+      "tags": ["admin", null],
+      "deleted_at": null
+    },
+    {
+      "userId": 2,
+      "phone": "600123456",
+      "Postal Code": "12500",
+      "class": "basic",
+      "2fa": false,
+      "tags": [],
+      "deleted_at": null,
+      "manager": {
+        "user_id": 7
+      }
+    }
+  ]
+}
