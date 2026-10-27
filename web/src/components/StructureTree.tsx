@@ -190,7 +190,7 @@ export function StructureTree({ schema, edits, onEditsChange, warnings, analysis
       title={t.structureTitle}
       actions={
         hasEdits(edits) && (
-          <button type="button" className="button button--small" onClick={() => onEditsChange({ classes: {}, fields: {} })}>
+          <button type="button" className="button" onClick={() => onEditsChange({ classes: {}, fields: {} })}>
             {t.resetEdits}
           </button>
         )

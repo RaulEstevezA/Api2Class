@@ -77,15 +77,15 @@ export function JsonInputPanel({ value, onChange, result }: JsonInputPanelProps)
         title={t.inputTitle}
         actions={
           <>
-            <button type="button" className="button button--small" onClick={() => change(EXAMPLE_JSON)}>
+            <button type="button" className="button" onClick={() => change(EXAMPLE_JSON)}>
               {t.loadExample}
             </button>
-            <button type="button" className="button button--small" onClick={() => fileInput.current?.click()}>
+            <button type="button" className="button" onClick={() => fileInput.current?.click()}>
               {t.openFile}
             </button>
             <button
               type="button"
-              className="button button--small"
+              className="button"
               disabled={!result.ok}
               onClick={() => result.ok && change(formatJson(result.value))}
             >
@@ -93,13 +93,13 @@ export function JsonInputPanel({ value, onChange, result }: JsonInputPanelProps)
             </button>
             <button
               type="button"
-              className="button button--small"
+              className="button"
               disabled={!result.ok}
               onClick={() => result.ok && change(minifyJson(result.value))}
             >
               {t.minify}
             </button>
-            <button type="button" className="button button--small" onClick={() => change('')} disabled={value === ''}>
+            <button type="button" className="button" onClick={() => change('')} disabled={value === ''}>
               {t.clear}
             </button>
             <input

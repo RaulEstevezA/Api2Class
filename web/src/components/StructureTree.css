@@ -169,20 +169,25 @@ span.structure__toggle {
 .structure__editor > label {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   color: var(--muted);
 }
 
 .structure__editor input[type='text'],
 .structure__editor select {
   min-width: 150px;
-  padding: 3px 6px;
+  padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--page-bg);
   color: var(--text);
   font: inherit;
   font-family: var(--mono);
+  font-size: 0.875rem;
+}
+
+.structure__editor select {
+  font-family: inherit;
 }
 
 .structure__checks {
@@ -204,7 +209,7 @@ span.structure__toggle {
 
 .structure__root-name {
   width: 18ch;
-  padding: 1px 6px;
+  padding: 6px 10px;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--page-bg);

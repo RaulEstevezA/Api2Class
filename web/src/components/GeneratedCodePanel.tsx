@@ -94,10 +94,10 @@ export function GeneratedCodePanel({ generator, settings, onGeneratorChange, onS
             )}
           </span>
           <div className="generated__actions">
-            <button type="button" className="button button--small" onClick={copy} disabled={!file}>
+            <button type="button" className="button" onClick={copy} disabled={!file}>
               {copied ? t.copied : t.copy}
             </button>
-            <button type="button" className="button button--small button--primary" onClick={download} disabled={files.length === 0}>
+            <button type="button" className="button button--primary" onClick={download} disabled={files.length === 0}>
               {files.length > 1 ? t.downloadZip(files.length) : t.download}
             </button>
           </div>
