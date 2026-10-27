@@ -29,6 +29,7 @@ class Messages:
     tagline: str
     intro_description: str
     privacy_short: str
+    developed_by: str
     language_label: str
     input_title: str
     input_placeholder: str
@@ -202,6 +203,7 @@ EN = Messages(
         "or Scala, or a JSON Schema or Smithy definition."
     ),
     privacy_short="Processed locally",
+    developed_by="Developed by",
     language_label="Language",
     input_title="JSON input",
     input_placeholder="Paste a JSON response here or drop the file…",
@@ -273,6 +275,7 @@ ES = Messages(
         "Rust o Scala, o una definición en JSON Schema o Smithy."
     ),
     privacy_short="Procesado en local",
+    developed_by="Desarrollado por",
     language_label="Idioma",
     input_title="Entrada JSON",
     input_placeholder="Pega aquí una respuesta JSON o arrastra el archivo…",

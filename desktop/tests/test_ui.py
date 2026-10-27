@@ -103,3 +103,10 @@ def test_clearing_the_json_clears_the_edits(window):
     uncheck(window, "email")
     window.json_panel._buttons["clear"].click()
     assert window.session.edits.is_empty()
+
+
+def test_credit_links_to_the_portfolio(window):
+    text = window.credit.text()
+    assert "Desarrollado por" in text or "Developed by" in text
+    assert 'href="https://raulesteveza.github.io/"' in text
+    assert window.credit.openExternalLinks()

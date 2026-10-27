@@ -19,6 +19,9 @@ from .i18n import MESSAGES, I18n
 from .json_panel import JsonPanel
 from .session import Session
 from .structure_panel import StructurePanel
+from .theme import ACCENT
+
+PORTFOLIO_URL = "https://raulesteveza.github.io/"
 
 
 class LanguageSwitcher(QWidget):
@@ -100,6 +103,14 @@ class MainWindow(QMainWindow):
         splitter.setSizes([1, 1, 1])
         page.addWidget(splitter, 1)
 
+        # Credit at the bottom; the name opens the portfolio in the browser
+        self.credit = QLabel()
+        self.credit.setProperty("role", "muted")
+        self.credit.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.credit.setOpenExternalLinks(True)
+        self.credit.setTextFormat(Qt.TextFormat.RichText)
+        page.addWidget(self.credit)
+
         self.setCentralWidget(central)
         i18n.changed.connect(self._retranslate)
         self._retranslate()
@@ -109,3 +120,5 @@ class MainWindow(QMainWindow):
         self.privacy_tag.setText(t.privacy_short)
         self.tagline.setText(t.tagline)
         self.description.setText(t.intro_description)
+        link = f'<a href="{PORTFOLIO_URL}" style="color: {ACCENT}; text-decoration: none;">Raúl Estévez</a>'
+        self.credit.setText(f"{t.developed_by} {link}")
