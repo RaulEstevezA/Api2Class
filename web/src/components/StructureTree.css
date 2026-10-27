@@ -101,7 +101,6 @@ span.structure__toggle {
 
 .structure__include {
   margin: 0;
-  accent-color: var(--accent);
   cursor: pointer;
 }
 
@@ -201,7 +200,6 @@ span.structure__toggle {
 }
 
 .structure__checks input {
-  accent-color: var(--accent);
 }
 
 .structure__root-name {
@@ -266,5 +264,4 @@ span.structure__toggle {
 
 .structure__settings input {
   margin: 0;
-  accent-color: var(--accent);
 }

@@ -99,6 +99,7 @@ export function StructureTree({ schema, edits, onEditsChange, warnings, analysis
             className="structure__include"
             checked={!excluded}
             aria-label={t.includeField(field.key)}
+            title={excluded ? t.fieldExcluded : t.fieldIncluded}
             onChange={(event) => editField(path, { excluded: event.target.checked ? undefined : true })}
           />
           {nested && !excluded ? (

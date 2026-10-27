@@ -22,6 +22,7 @@
   --bracket: rgba(63, 185, 80, 0.25);
   --error-line: rgba(248, 81, 73, 0.15);
   --window-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.04);
+  --on-accent: #0d1117;
 
   /* Syntax colors of GitHub's dark theme */
   --syntax-keyword: #ff7b72;
@@ -57,6 +58,7 @@
   --bracket: rgba(74, 194, 107, 0.3);
   --error-line: rgba(255, 129, 130, 0.25);
   --window-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+  --on-accent: #ffffff;
 
   /* Syntax colors of GitHub's light theme */
   --syntax-keyword: #cf222e;
@@ -93,6 +95,7 @@
     --bracket: rgba(74, 194, 107, 0.3);
     --error-line: rgba(255, 129, 130, 0.25);
     --window-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+    --on-accent: #ffffff;
 
     /* Syntax colors of GitHub's light theme */
     --syntax-keyword: #cf222e;
@@ -150,6 +153,44 @@ a:hover {
 
 button {
   font: inherit;
+}
+
+/* Checkboxes drawn by the page, not the browser: native ones change color when the window loses
+   focus and Safari only repaints some of them on hover, so checked boxes looked different */
+input[type='checkbox'] {
+  display: inline-grid;
+  place-content: center;
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  border: 1px solid var(--muted);
+  border-radius: 4px;
+  background: var(--page-bg);
+  cursor: pointer;
+  appearance: none;
+}
+
+input[type='checkbox']::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  background: var(--on-accent);
+  clip-path: polygon(14% 44%, 0 59%, 39% 100%, 100% 21%, 85% 7%, 38% 70%);
+  transform: scale(0);
+}
+
+input[type='checkbox']:checked {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+input[type='checkbox']:checked::before {
+  transform: scale(1);
+}
+
+input[type='checkbox']:hover:not(:checked) {
+  border-color: var(--text);
 }
 
 :focus-visible {
