@@ -69,7 +69,7 @@ class MainWindow(QMainWindow):
         intro = QFrame()
         intro.setObjectName("card")
         intro_layout = QHBoxLayout(intro)
-        intro_layout.setContentsMargins(28, 18, 28, 18)
+        intro_layout.setContentsMargins(40, 32, 40, 32)
         text = QVBoxLayout()
         title_row = QHBoxLayout()
         title = QLabel("Api2Class")

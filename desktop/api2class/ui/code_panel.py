@@ -50,7 +50,7 @@ class CodePanel(Pane):
         self._grid.setHorizontalSpacing(10)
         self._option_widgets: list[QWidget] = []
         self.naming_label = QLabel()
-        self.naming_label.setProperty("role", "muted")
+        self.naming_label.setProperty("role", "fieldLabel")
         self.naming = QComboBox()
         self.naming.activated.connect(lambda _=0: session.set_naming(self.naming.currentData()))
         self.multiple = QCheckBox()
@@ -179,7 +179,7 @@ class CodePanel(Pane):
             if option.styles and style not in option.styles:
                 continue
             label = QLabel(t.option_label(option.id))
-            label.setProperty("role", "muted")
+            label.setProperty("role", "fieldLabel")
             combo = QComboBox()
             for choice in option.choices:
                 combo.addItem(t.no_library if choice.id == "none" else choice.label, choice.id)

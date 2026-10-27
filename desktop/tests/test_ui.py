@@ -93,9 +93,9 @@ def test_options_and_language_switch(window):
     window.session.set_option("library", "moshi")
     assert "@JsonClass(generateAdapter = true)" in window.code_panel.code.toPlainText()
     window._i18n.set_language("en")
-    assert window.code_panel.title.text() == "GENERATED CODE"
+    assert window.code_panel.title.text() == "Generated code"
     window._i18n.set_language("es")
-    assert window.code_panel.title.text() == "CÓDIGO GENERADO"
+    assert window.code_panel.title.text() == "Código generado"
 
 
 def test_clearing_the_json_clears_the_edits(window):

@@ -40,9 +40,10 @@ QWidget {{
 }}
 QLabel {{ background: transparent; }}
 QLabel[role="muted"] {{ color: {MUTED}; }}
-QLabel[role="title"] {{ font-size: 28px; font-weight: 700; }}
-QLabel[role="subtitle"] {{ font-size: 16px; }}
-QLabel[role="paneTitle"] {{ color: {MUTED}; font-size: 12px; font-weight: 600; letter-spacing: 1px; }}
+QLabel[role="title"] {{ font-size: 32px; font-weight: 700; }}
+QLabel[role="subtitle"] {{ color: {MUTED}; font-size: 17px; }}
+QLabel[role="paneTitle"] {{ font-size: 17px; font-weight: 600; }}
+QLabel[role="fieldLabel"] {{ color: {MUTED}; font-size: 13px; }}
 QLabel[role="success"] {{ color: {SUCCESS}; }}
 QLabel[role="error"] {{ color: {DANGER}; }}
 QLabel[role="warning"] {{ color: {WARNING}; }}
@@ -87,9 +88,8 @@ QPushButton {{
     background: {SURFACE_RAISED};
     color: {BTN_TEXT};
     border: 1px solid {BORDER};
-    border-radius: 6px;
-    padding: 4px 12px;
-    font-size: 13px;
+    border-radius: 8px;
+    padding: 8px 16px;
     font-weight: 500;
 }}
 QPushButton:hover {{ background: {BORDER}; border-color: {MUTED}; }}
@@ -110,12 +110,11 @@ QComboBox, QLineEdit {{
     background: {PAGE_BG};
     border: 1px solid {BORDER};
     border-radius: 6px;
-    padding: 3px 8px;
-    font-size: 13px;
+    padding: 6px 10px;
 }}
 QLineEdit:focus, QComboBox:focus {{ border-color: {ACCENT}; }}
 QComboBox QAbstractItemView {{ background: {SURFACE_RAISED}; selection-background-color: {ACCENT_SOFT}; }}
-QCheckBox {{ background: transparent; spacing: 6px; font-size: 13px; }}
+QCheckBox {{ background: transparent; spacing: 8px; }}
 QCheckBox::indicator, QTreeView::indicator {{
     width: 14px;
     height: 14px;

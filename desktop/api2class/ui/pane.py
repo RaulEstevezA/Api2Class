@@ -12,7 +12,7 @@ class Pane(QFrame):
         layout.setSpacing(0)
         header = section()
         self.header = QHBoxLayout(header)
-        self.header.setContentsMargins(14, 10, 10, 10)
+        self.header.setContentsMargins(16, 12, 12, 12)
         self.title = QLabel()
         self.title.setProperty("role", "paneTitle")
         self.header.addWidget(self.title)
