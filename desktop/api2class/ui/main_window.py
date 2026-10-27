@@ -1,4 +1,4 @@
-"""Main window: header with the language switcher, the intro card and the three panels. Unlike the web
+"""Main window: the intro card (with the language switcher), the three panels and the credit. Unlike the web
 version, it has no links: the app works on its own, without going online."""
 
 from PySide6.QtCore import Qt
@@ -61,14 +61,6 @@ class MainWindow(QMainWindow):
         page.setContentsMargins(24, 16, 24, 16)
         page.setSpacing(16)
 
-        header = QHBoxLayout()
-        brand = QLabel("Api2Class")
-        brand.setStyleSheet("font-weight: 600;")
-        header.addWidget(brand)
-        header.addStretch()
-        header.addWidget(LanguageSwitcher(i18n))
-        page.addLayout(header)
-
         intro = QFrame()
         intro.setObjectName("card")
         intro_layout = QHBoxLayout(intro)
@@ -82,6 +74,8 @@ class MainWindow(QMainWindow):
         title_row.addWidget(title)
         title_row.addWidget(self.privacy_tag)
         title_row.addStretch()
+        # The language switcher sits in the card's top right corner: there is no header line
+        title_row.addWidget(LanguageSwitcher(i18n), 0, Qt.AlignmentFlag.AlignTop)
         text.addLayout(title_row)
         self.tagline = QLabel()
         self.tagline.setProperty("role", "subtitle")
