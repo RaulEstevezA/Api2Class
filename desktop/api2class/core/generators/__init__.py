@@ -11,6 +11,7 @@ from .php import PHP
 from .python import PYTHON
 from .rust import RUST
 from .scala import SCALA
+from .smithy import SMITHY
 from .swift import SWIFT
 from .types import Generator
 from .typescript import TYPESCRIPT
