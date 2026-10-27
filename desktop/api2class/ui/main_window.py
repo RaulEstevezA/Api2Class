@@ -85,9 +85,7 @@ class MainWindow(QMainWindow):
         self.description = QLabel()
         self.description.setProperty("role", "muted")
         self.description.setWordWrap(True)
-        self.privacy = QLabel()
-        self.privacy.setProperty("role", "success")
-        for label in (self.tagline, self.description, self.privacy):
+        for label in (self.tagline, self.description):
             text.addWidget(label)
         intro_layout.addLayout(text, 1)
         page.addWidget(intro)
@@ -111,4 +109,3 @@ class MainWindow(QMainWindow):
         self.privacy_tag.setText(t.privacy_short)
         self.tagline.setText(t.tagline)
         self.description.setText(t.intro_description)
-        self.privacy.setText(t.privacy_note)

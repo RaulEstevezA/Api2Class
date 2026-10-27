@@ -29,7 +29,6 @@ class Messages:
     tagline: str
     intro_description: str
     privacy_short: str
-    privacy_note: str
     language_label: str
     input_title: str
     input_placeholder: str
@@ -203,7 +202,6 @@ EN = Messages(
         "or Scala, or a JSON Schema or Smithy definition."
     ),
     privacy_short="Processed locally",
-    privacy_note="Processed on your computer. Your API data never leaves your device.",
     language_label="Language",
     input_title="JSON INPUT",
     input_placeholder="Paste a JSON response here, or drop a .json file…",
@@ -275,7 +273,6 @@ ES = Messages(
         "Rust o Scala, o una definición en JSON Schema o Smithy."
     ),
     privacy_short="Procesado en local",
-    privacy_note="Se procesa en tu equipo. Los datos de tu API no salen de tu dispositivo.",
     language_label="Idioma",
     input_title="ENTRADA JSON",
     input_placeholder="Pega aquí una respuesta JSON, o suelta un archivo .json…",
