@@ -28,7 +28,7 @@ function describeFound(found: string | undefined): string {
 const en = {
   tagline: 'Turn JSON API responses into typed models',
   introDescription:
-    'Paste a JSON response from an API (from Postman, the browser or a log), review the structure detected and get ready-to-use classes for Python, Java or TypeScript.',
+    'Paste a JSON response from an API (from Postman, the browser or a log), review and edit the structure detected, and get ready-to-use models for Python, Java, TypeScript, C#, Kotlin, Dart, Swift, Go, PHP, Rust or Scala, or a JSON Schema or Smithy definition.',
   privacyShort: 'Processed locally',
   privacyNote: 'Processed locally in your browser. Your API data never leaves your device.',
   introCode: 'Source code',
@@ -142,7 +142,7 @@ export type Messages = typeof en
 const es: Messages = {
   tagline: 'Convierte respuestas JSON de APIs en modelos tipados',
   introDescription:
-    'Pega una respuesta JSON de una API (de Postman, del navegador o de un log), revisa la estructura detectada y obtén clases listas para usar en Python, Java o TypeScript.',
+    'Pega una respuesta JSON de una API (de Postman, del navegador o de un log), revisa y edita la estructura detectada, y obtén modelos listos para usar en Python, Java, TypeScript, C#, Kotlin, Dart, Swift, Go, PHP, Rust o Scala, o una definición en JSON Schema o Smithy.',
   privacyShort: 'Procesado en local',
   privacyNote: 'Se procesa en tu navegador. Los datos de tu API no salen de tu dispositivo.',
   introCode: 'Código fuente',
