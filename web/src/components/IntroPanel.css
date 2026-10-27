@@ -1,0 +1,78 @@
+/* Same look as the portfolio "window" cards */
+.window {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 32px;
+  margin-top: 16px;
+  padding: 24px 32px;
+}
+
+.intro__text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 760px;
+}
+
+.intro__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.intro h1 {
+  font-size: 2rem;
+  line-height: 1.15;
+}
+
+.intro__badge {
+  padding: 2px 10px;
+  border: 1px solid var(--success);
+  border-radius: 999px;
+  color: var(--success);
+  font-size: 0.8125rem;
+}
+
+.intro__subtitle {
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.intro__description,
+.intro__privacy {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.intro__privacy {
+  color: var(--success);
+}
+
+.intro__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .intro {
+    padding: 20px 16px;
+  }
+
+  .intro h1 {
+    font-size: 1.6rem;
+  }
+}

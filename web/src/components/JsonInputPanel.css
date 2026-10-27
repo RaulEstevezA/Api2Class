@@ -1,0 +1,11 @@
+.json-status {
+  color: var(--muted);
+}
+
+.json-status--ok {
+  color: var(--success);
+}
+
+.json-status--error {
+  color: var(--danger);
+}
