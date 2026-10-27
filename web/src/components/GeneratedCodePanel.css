@@ -1,0 +1,33 @@
+.select {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-raised);
+  color: var(--btn-text);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.select:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.generated__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.generated__file {
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+.generated__actions {
+  display: flex;
+  gap: 6px;
+}
