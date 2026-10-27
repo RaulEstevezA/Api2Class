@@ -4,7 +4,7 @@ Language-neutral resources used by both the web (TypeScript) and desktop (Python
 
 ## test-cases/
 
-Test cases that define the expected behavior of every feature available in both versions. The Vitest suite (`web/`) loads them, and the pytest suite (`desktop/`) will load the same files, so if one implementation behaves differently, its tests fail.
+Test cases that define the expected behavior of every feature available in both versions. The Vitest suite (`web/`) and the pytest suite (`desktop/`) load the same files, so if one implementation behaves differently, its tests fail.
 
 | File | What it checks |
 |---|---|
@@ -25,12 +25,12 @@ The expected generated code is real code: see the [web README](../web/README_en.
 Shared logic lives in a `core/` folder in each version, with no UI dependencies:
 
 - Web: `web/src/core/` (TypeScript)
-- Desktop: `desktop/api2class/core/` (Python, planned)
+- Desktop: `desktop/api2class/core/` (Python)
 
 A file in one `core/` has its counterpart in the other (e.g. `analyze.ts` / `analyze.py`), and both must pass the cases in `test-cases/`.
 
-## Notes for the desktop version
+## Notes on the Python port
 
-- JSON: write the parser by hand as in `web/src/core/json.ts` instead of using `json.loads`, so the error codes, positions and context match. Columns count characters (code points), not bytes or UTF-16 units. `\uXXXX` escapes forming a surrogate pair (`😀`) must become one character.
+- JSON: write the parser by hand as in `web/src/core/json.ts` instead of using `json.loads`, so the error codes, positions and context match. Columns count characters (code points), not bytes or UTF-16 units. `\uXXXX` escapes forming a surrogate pair (`\ud83d\ude00`) must become one character.
 - Analysis: keep the order of keys as they first appear, number classes level by level (breadth-first) and merge identical classes children first, as the web does.
 - Warnings sort mixed types by count with a stable sort, so ties keep the order in which the types were first found.
