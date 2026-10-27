@@ -12,7 +12,7 @@ Qué hace la herramienta y su filosofía están en el [README principal](../READ
 |---|---|
 | [React 19](https://react.dev) + [TypeScript](https://www.typescriptlang.org) | Interfaz y lenguaje |
 | [Vite](https://vite.dev) | Servidor de desarrollo y compilación |
-| [CodeMirror 6](https://codemirror.net) | Editor del JSON y visor del código generado |
+| [CodeMirror 6](https://codemirror.net) | Editor del JSON y visor del código generado (el resaltado de cada lenguaje se carga solo cuando se usa) |
 | [Vitest](https://vitest.dev) | Tests |
 | [oxlint](https://oxc.rs) | Análisis estático |
 
@@ -40,31 +40,34 @@ Para probar con respuestas reales de APIs se puede crear una carpeta `local-data
 ```
 src/
   core/                 Lógica sin interfaz ni React (cada módulo con su test)
-    json.ts             Parser JSON estricto: errores con línea y columna, enteros y decimales separados
-    analyze.ts          JSON → modelo intermedio (clases, tipos, opcionales, nullable)
+    json.ts             Parser JSON estricto: errores con qué se esperaba y dónde, enteros y decimales separados
+    format.ts           Formatear y minificar sin cambiar ningún número ni clave
+    analyze.ts          JSON → modelo intermedio: clases, tipos, formatos, opcionales, nullable, clases compartidas
     schema.ts           El modelo intermedio, la única entrada de los generadores
+    edits.ts            Ediciones del usuario por ruta, aplicadas sobre el modelo detectado
+    warnings.ts         Campos para revisar: tipos mezclados, arrays y objetos vacíos, solo null
     naming.ts           PascalCase / camelCase / snake_case, singular, identificadores válidos
     generators/
-      types.ts          Interfaz Generator
+      types.ts          Interfaz Generator, opciones y ajustes
       index.ts          Lista de generadores disponibles
-      common.ts         Utilidades comunes a los generadores (nombres válidos y sin repetir)
-      python/  java/  typescript/
+      common.ts         Nombres válidos en cada lenguaje (createNames), comunes a todos los generadores
+      python/ java/ typescript/ csharp/ kotlin/ dart/ swift/ go/ php/ rust/ scala/ jsonschema/ smithy/
   components/           Interfaz React (un componente por panel, con su CSS)
   i18n/                 Textos en inglés y castellano
-  hooks/                useStoredState: recuerda opciones en el navegador
-  utils/                Descargas y el JSON de ejemplo
+  hooks/                useStoredState: recuerda las preferencias en el navegador
+  utils/                Descargas, creación de .zip, carga del resaltado de sintaxis y el JSON de ejemplo
 ```
 
 `core/` no depende de React: es la parte que se prueba con los casos compartidos y la que tendrá su equivalente en la versión de escritorio.
 
 ## Añadir un lenguaje
 
-1. Crear `src/core/generators/<lenguaje>/<lenguaje>.ts` exportando un `Generator`: `id`, `label`, `styles` y `generate(schema, options)`, que devuelve el nombre del archivo y el código.
-2. Añadirlo a la lista de `src/core/generators/index.ts`.
-3. Añadir su resaltado de sintaxis en `src/components/GeneratedCodePanel.tsx`.
-4. Añadir la salida esperada de cada caso en `shared/test-cases/generators/<caso>/<lenguaje>-<estilo>.<ext>`. Los tests fallan mientras falte alguno.
+1. Crear `src/core/generators/<lenguaje>/<lenguaje>.ts` exportando un `Generator`: `id`, `label`, `options` (el estilo primero), `supportsMultipleFiles` y `generate(schema, settings)`, que devuelve los archivos, un ejemplo de uso y los nombres que ha tenido que cambiar.
+2. Decidir los nombres con `createNames` (palabras reservadas, convención por defecto, cómo escapar las palabras clave) en lugar de convertir las claves a mano.
+3. Añadirlo a la lista de `src/core/generators/index.ts` y su resaltado de sintaxis en `src/utils/editorLanguages.ts`.
+4. Añadir la salida esperada de cada caso y estilo en `shared/test-cases/generators/<caso>/<lenguaje>-<estilo>.<ext>`. Los tests fallan mientras falte alguna.
 
-Un generador solo lee el modelo intermedio (`Schema`), nunca el JSON, así que no necesita saber cómo se ha analizado.
+Un generador solo lee el modelo intermedio (`Schema`), nunca el JSON, así que no necesita saber cómo se ha analizado ni editado.
 
 ## Tests
 
@@ -72,19 +75,35 @@ Un generador solo lee el modelo intermedio (`Schema`), nunca el JSON, así que n
 npm test
 ```
 
-La mayoría de los tests leen sus casos de [`shared/test-cases/`](../shared/README.md): validación del JSON, análisis, nombres y, para cada lenguaje, el código exacto esperado para cada entrada de ejemplo. Los archivos esperados de Python se han ejecutado con Python 3.12, los de Java se han compilado con `javac` y los de TypeScript se han comprobado con `tsc --strict`.
+Unos 300 tests. La mayoría leen sus casos de [`shared/test-cases/`](../shared/README.md): validación y formato del JSON, análisis, ediciones, avisos, nombres y, para cada lenguaje y estilo, el código exacto esperado para cada entrada de ejemplo.
+
+El código esperado también se ha ejecutado con las herramientas reales de cada lenguaje, fuera de este repositorio:
+
+| Lenguaje | Comprobación |
+|---|---|
+| Python | Python 3.12 lee cada entrada con `from_dict` / Pydantic 2.14 y la vuelve a escribir sin cambios |
+| Java | Compilado y ejecutado con Jackson 2.18, Gson 2.11 y Lombok: cada entrada hace el viaje de ida y vuelta |
+| TypeScript | `tsc --strict`; Zod 4.6 acepta cada entrada |
+| Dart | Dart 3.13 lee y vuelve a escribir cada entrada (clase normal, con y sin `copyWith`) |
+| Swift | Compilado con Swift 6.4: cada entrada se decodifica y se vuelve a codificar |
+| PHP | PHP 8.3 con `strict_types`: cada entrada hace el viaje de ida y vuelta |
+| Rust | serde 1 con Rust 1.88: cada entrada hace el viaje de ida y vuelta |
+| JSON Schema | Cada esquema pasa el metaesquema 2020-12 y valida su entrada |
+| C#, Kotlin, Go, Scala, Smithy | Todavía sin compilar (no hay compilador en el equipo de desarrollo) |
 
 ## Privacidad
 
 - No hay servidor ni llamadas a APIs: el JSON se analiza y el código se genera en memoria, y las descargas se crean en el navegador.
-- No hay analítica ni cookies. El JSON pegado no se guarda, ni siquiera en el navegador; lo único que se guarda en el `localStorage` son preferencias: idioma de la interfaz, lenguaje de programación y estilo.
+- No hay analítica ni cookies. Ni el JSON pegado ni las ediciones se guardan, ni siquiera en el navegador; lo único que se guarda en el `localStorage` son preferencias: idioma de la interfaz, tema, lenguaje de programación, opciones y nombres.
 
 ## Límites actuales
 
 | | Límite | Motivo |
 |---|---|---|
 | Anidamiento | 512 niveles | No agotar la pila; las respuestas de APIs quedan muy lejos |
-| Valores de tipos distintos en un campo | Tipo `any` (`Object`, `unknown`) | Todavía no se generan uniones |
-| Java | Un archivo con todas las clases, solo la raíz pública | Descargar un archivo por clase necesita un .zip |
+| Valores de tipos distintos en un campo | Tipo `any` (`Object`, `unknown`, `JsonElement`...) | Todavía no se generan uniones: el tipo se puede elegir a mano |
+| Fechas en Kotlin, Rust, Go (fechas sin hora) y Swift (fechas sin hora) | Se quedan como texto | Sus librerías habituales necesitan adaptadores o crates aparte |
+| Rust, Scala, JSON Schema, Smithy | Un archivo | Varios archivos necesitarían una estructura de módulos que depende del proyecto |
+| Scala | Los campos conservan las claves del JSON | circe deriva los codecs de los nombres de los campos |
 
 [Volver al README principal](../README_es.md)
