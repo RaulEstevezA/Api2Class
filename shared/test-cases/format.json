@@ -1,0 +1,38 @@
+[
+  {
+    "description": "nested objects and arrays",
+    "input": "{\"id\":15,\"address\":{\"city\":\"Vinaros\"},\"orders\":[{\"id\":101,\"total\":29.95}],\"tags\":[\"a\",\"b\"]}",
+    "formatted": "{\n  \"id\": 15,\n  \"address\": {\n    \"city\": \"Vinaros\"\n  },\n  \"orders\": [\n    {\n      \"id\": 101,\n      \"total\": 29.95\n    }\n  ],\n  \"tags\": [\n    \"a\",\n    \"b\"\n  ]\n}",
+    "minified": "{\"id\":15,\"address\":{\"city\":\"Vinaros\"},\"orders\":[{\"id\":101,\"total\":29.95}],\"tags\":[\"a\",\"b\"]}"
+  },
+  {
+    "description": "numbers keep how they were written",
+    "input": "[29.0, 1e3, 12345678901234567890, -0.50]",
+    "formatted": "[\n  29.0,\n  1e3,\n  12345678901234567890,\n  -0.50\n]",
+    "minified": "[29.0,1e3,12345678901234567890,-0.50]"
+  },
+  {
+    "description": "empty objects and arrays stay on one line",
+    "input": "{ \"a\": {}, \"b\": [ ], \"c\": [{}] }",
+    "formatted": "{\n  \"a\": {},\n  \"b\": [],\n  \"c\": [\n    {}\n  ]\n}",
+    "minified": "{\"a\":{},\"b\":[],\"c\":[{}]}"
+  },
+  {
+    "description": "strings are escaped only where JSON requires it",
+    "input": "{\"text\": \"Estévez \\u00e9 \\\"quoted\\\" \\\\ \\n \\t \\u0001 \\/\"}",
+    "formatted": "{\n  \"text\": \"Estévez é \\\"quoted\\\" \\\\ \\n \\t \\u0001 /\"\n}",
+    "minified": "{\"text\":\"Estévez é \\\"quoted\\\" \\\\ \\n \\t \\u0001 /\"}"
+  },
+  {
+    "description": "repeated keys and key order are kept",
+    "input": "{\"b\": 1, \"a\": 2, \"b\": 3}",
+    "formatted": "{\n  \"b\": 1,\n  \"a\": 2,\n  \"b\": 3\n}",
+    "minified": "{\"b\":1,\"a\":2,\"b\":3}"
+  },
+  {
+    "description": "top-level primitives",
+    "input": " true ",
+    "formatted": "true",
+    "minified": "true"
+  }
+]

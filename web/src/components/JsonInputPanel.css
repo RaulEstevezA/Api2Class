@@ -1,3 +1,31 @@
+.json-input {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+}
+
+.json-input > .pane {
+  flex: 1;
+}
+
+.json-input .pane__body {
+  position: relative;
+}
+
+.json-input__drop {
+  position: absolute;
+  inset: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius);
+  background: rgba(13, 17, 23, 0.85);
+  color: var(--accent-text);
+  font-weight: 500;
+  pointer-events: none;
+}
+
 .json-status {
   color: var(--muted);
 }
