@@ -19,6 +19,9 @@ export type JsonErrorCode =
   | 'trailingContent'
   | 'tooDeep'
 
+/** What the parser was waiting for when it found something else */
+export type JsonExpected = 'value' | 'key' | 'colon' | 'commaOrBrace' | 'commaOrBracket'
+
 export interface JsonErrorInfo {
   code: JsonErrorCode
   /** 1-based, counted in characters (code points), the same as the desktop version */
@@ -26,6 +29,9 @@ export interface JsonErrorInfo {
   column: number
   /** The offending character, when there is one */
   found?: string
+  expected?: JsonExpected
+  /** The last property read before the error, to say where it is ("after "email"") */
+  key?: string
 }
 
 export type ParseResult = { ok: true; value: JsonValue } | { ok: false; error: JsonErrorInfo }
@@ -33,14 +39,21 @@ export type ParseResult = { ok: true; value: JsonValue } | { ok: false; error: J
 // Deeper documents are almost certainly not API responses, and the limit avoids a stack overflow
 export const MAX_DEPTH = 512
 
+interface Context {
+  expected?: JsonExpected
+  key?: string
+}
+
 class JsonError extends Error {
   readonly code: JsonErrorCode
   readonly index: number
+  readonly context: Context
 
-  constructor(code: JsonErrorCode, index: number) {
+  constructor(code: JsonErrorCode, index: number, context: Context) {
     super(code)
     this.code = code
     this.index = index
+    this.context = context
   }
 }
 
@@ -57,25 +70,25 @@ export function parseJson(text: string): ParseResult {
     while (index < source.length && ' \t\n\r'.includes(source[index])) index++
   }
 
-  function fail(code: JsonErrorCode): never {
-    throw new JsonError(code, index)
+  function fail(code: JsonErrorCode, context: Context = {}): never {
+    throw new JsonError(code, index, context)
   }
 
-  function unexpected(): never {
-    fail(index >= source.length ? 'unexpectedEnd' : 'unexpectedCharacter')
+  function unexpected(context: Context): never {
+    fail(index >= source.length ? 'unexpectedEnd' : 'unexpectedCharacter', context)
   }
 
-  function expect(char: string) {
-    if (source[index] !== char) unexpected()
+  function expect(char: string, context: Context) {
+    if (source[index] !== char) unexpected(context)
     index++
   }
 
-  function parseValue(depth: number): JsonValue {
+  function parseValue(depth: number, key?: string): JsonValue {
     if (depth > MAX_DEPTH) fail('tooDeep')
     skipWhitespace()
     const char = source[index]
     if (char === '{') return parseObject(depth)
-    if (char === '[') return parseArray(depth)
+    if (char === '[') return parseArray(depth, key)
     if (char === '"') return { kind: 'string', value: parseString() }
     if (char === '-' || (char >= '0' && char <= '9')) return parseNumber()
     for (const [word, value] of [
@@ -88,7 +101,7 @@ export function parseJson(text: string): ParseResult {
         return value
       }
     }
-    unexpected()
+    unexpected({ expected: 'value', key })
   }
 
   function parseObject(depth: number): JsonValue {
@@ -101,23 +114,24 @@ export function parseJson(text: string): ParseResult {
     }
     for (;;) {
       skipWhitespace()
-      if (source[index] === '}' && entries.length > 0) fail('trailingComma')
-      if (source[index] !== '"') unexpected()
+      const previous = entries.at(-1)?.[0]
+      if (source[index] === '}' && entries.length > 0) fail('trailingComma', { key: previous })
+      if (source[index] !== '"') unexpected({ expected: 'key', key: previous })
       const key = parseString()
       skipWhitespace()
-      expect(':')
-      entries.push([key, parseValue(depth + 1)])
+      expect(':', { expected: 'colon', key })
+      entries.push([key, parseValue(depth + 1, key)])
       skipWhitespace()
       if (source[index] === ',') {
         index++
         continue
       }
-      expect('}')
+      expect('}', { expected: 'commaOrBrace', key })
       return { kind: 'object', entries }
     }
   }
 
-  function parseArray(depth: number): JsonValue {
+  function parseArray(depth: number, key?: string): JsonValue {
     const items: JsonValue[] = []
     index++
     skipWhitespace()
@@ -127,14 +141,14 @@ export function parseJson(text: string): ParseResult {
     }
     for (;;) {
       skipWhitespace()
-      if (source[index] === ']' && items.length > 0) fail('trailingComma')
-      items.push(parseValue(depth + 1))
+      if (source[index] === ']' && items.length > 0) fail('trailingComma', { key })
+      items.push(parseValue(depth + 1, key))
       skipWhitespace()
       if (source[index] === ',') {
         index++
         continue
       }
-      expect(']')
+      expect(']', { expected: 'commaOrBracket', key })
       return { kind: 'array', items }
     }
   }
@@ -203,5 +217,7 @@ function errorInfo(source: string, error: JsonError): JsonErrorInfo {
   }
   const found = source.codePointAt(error.index)
   if (found !== undefined && error.code !== 'empty') info.found = String.fromCodePoint(found)
+  if (error.context.expected) info.expected = error.context.expected
+  if (error.context.key !== undefined) info.key = error.context.key
   return info
 }

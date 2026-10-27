@@ -42,12 +42,20 @@
     }
   ],
   "invalid": [
-    { "description": "empty text", "input": "", "expected": { "code": "empty", "line": 1, "column": 1 } },
-    { "description": "only whitespace", "input": "  \n  ", "expected": { "code": "empty", "line": 2, "column": 3 } },
+    {
+      "description": "empty text",
+      "input": "",
+      "expected": { "code": "empty", "line": 1, "column": 1 }
+    },
+    {
+      "description": "only whitespace",
+      "input": "  \n  ",
+      "expected": { "code": "empty", "line": 2, "column": 3 }
+    },
     {
       "description": "object not closed",
       "input": "{\"id\": 1",
-      "expected": { "code": "unexpectedEnd", "line": 1, "column": 9 }
+      "expected": { "code": "unexpectedEnd", "line": 1, "column": 9, "expected": "commaOrBrace", "key": "id" }
     },
     {
       "description": "string not closed",
@@ -57,7 +65,7 @@
     {
       "description": "trailing comma in an object",
       "input": "{\n  \"id\": 1,\n}",
-      "expected": { "code": "trailingComma", "line": 3, "column": 1, "found": "}" }
+      "expected": { "code": "trailingComma", "line": 3, "column": 1, "found": "}", "key": "id" }
     },
     {
       "description": "trailing comma in an array",
@@ -67,32 +75,32 @@
     {
       "description": "single quotes",
       "input": "{'id': 1}",
-      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 2, "found": "'" }
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 2, "found": "'", "expected": "key" }
     },
     {
       "description": "unquoted key",
       "input": "{id: 1}",
-      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 2, "found": "i" }
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 2, "found": "i", "expected": "key" }
     },
     {
       "description": "missing comma between values",
       "input": "{\n  \"a\": 1\n  \"b\": 2\n}",
-      "expected": { "code": "unexpectedCharacter", "line": 3, "column": 3, "found": "\"" }
+      "expected": { "code": "unexpectedCharacter", "line": 3, "column": 3, "found": "\"", "expected": "commaOrBrace", "key": "a" }
     },
     {
       "description": "missing colon",
       "input": "{\"a\" 1}",
-      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 6, "found": "1" }
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 6, "found": "1", "expected": "colon", "key": "a" }
     },
     {
       "description": "comment",
       "input": "{\"a\": 1 // id\n}",
-      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 9, "found": "/" }
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 9, "found": "/", "expected": "commaOrBrace", "key": "a" }
     },
     {
       "description": "Python and JavaScript literals",
       "input": "{\"a\": None}",
-      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 7, "found": "N" }
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 7, "found": "N", "expected": "value", "key": "a" }
     },
     {
       "description": "leading zero",
@@ -115,6 +123,16 @@
       "expected": { "code": "controlCharacter", "line": 1, "column": 4, "found": "\n" }
     },
     {
+      "description": "missing comma in an array",
+      "input": "[1 2]",
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 4, "found": "2", "expected": "commaOrBracket" }
+    },
+    {
+      "description": "an array inside a property says which property",
+      "input": "{\"tags\": [\"a\" \"b\"]}",
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 15, "found": "\"", "expected": "commaOrBracket", "key": "tags" }
+    },
+    {
       "description": "two values",
       "input": "{\"a\": 1} {\"b\": 2}",
       "expected": { "code": "trailingContent", "line": 1, "column": 10, "found": "{" }
@@ -122,7 +140,7 @@
     {
       "description": "columns count characters, not bytes or UTF-16 units",
       "input": "{\"emoji\": \"😀\", \"name\": \"Estévez\" x}",
-      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 34, "found": "x" }
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 34, "found": "x", "expected": "commaOrBrace", "key": "name" }
     }
   ]
 }

@@ -1,4 +1,27 @@
-import type { JsonErrorCode } from '../core/json.ts'
+import type { JsonErrorInfo, JsonExpected } from '../core/json.ts'
+
+const EXPECTED_EN: Record<JsonExpected, string> = {
+  value: 'a value',
+  key: 'a property name in double quotes',
+  colon: '“:”',
+  commaOrBrace: '“,” or “}”',
+  commaOrBracket: '“,” or “]”',
+}
+
+const EXPECTED_ES: Record<JsonExpected, string> = {
+  value: 'un valor',
+  key: 'un nombre de propiedad entre comillas dobles',
+  colon: '“:”',
+  commaOrBrace: '“,” o “}”',
+  commaOrBracket: '“,” o “]”',
+}
+
+/** The character found, readable even when it is invisible (a line break, a tab). */
+function describeFound(found: string | undefined): string {
+  if (found === undefined) return ''
+  const escaped = JSON.stringify(found).slice(1, -1)
+  return `“${escaped || found}”`
+}
 
 const en = {
   tagline: 'Turn JSON API responses into typed models',
@@ -46,22 +69,35 @@ const en = {
   copied: 'Copied',
   download: 'Download',
   errorPosition: (line: number, column: number) => `Line ${line}, column ${column}`,
-  jsonError: {
-    empty: () => 'Paste a JSON response to start.',
-    unexpectedEnd: () => 'The JSON ends too early: a bracket, brace or quote is not closed.',
-    unexpectedCharacter: (found: string) =>
-      found === "'"
-        ? 'Unexpected single quote: JSON strings and keys use double quotes.'
-        : found === '/'
-          ? 'Unexpected /: JSON does not allow comments.'
-          : `Unexpected ${found}: a comma, colon or quote may be missing.`,
-    trailingComma: () => 'Comma before a closing bracket or brace: remove it.',
-    invalidNumber: () => 'Invalid number: JSON does not allow leading zeros or a dot without decimals.',
-    invalidEscape: () => 'Unknown escape sequence after \\.',
-    controlCharacter: () => 'Line break or tab inside a string: write it as \\n or \\t.',
-    trailingContent: () => 'There is more text after the end of the JSON.',
-    tooDeep: () => 'The JSON is nested too deep (more than 512 levels).',
-  } satisfies Record<JsonErrorCode, (found: string) => string>,
+  jsonEmpty: 'Paste a JSON response to start.',
+  jsonError: (error: JsonErrorInfo) => {
+    const after = error.key === undefined ? '' : ` after “${error.key}”`
+    const found = describeFound(error.found)
+    switch (error.code) {
+      case 'empty':
+        return 'Paste a JSON response to start.'
+      case 'unexpectedEnd':
+        return error.expected
+          ? `The JSON ends too early: expected ${EXPECTED_EN[error.expected]}${after}.`
+          : 'The JSON ends too early: a string is not closed.'
+      case 'unexpectedCharacter':
+        return `Expected ${EXPECTED_EN[error.expected ?? 'value']}${after}, found ${found}.${
+          error.found === "'" ? ' JSON uses double quotes.' : error.found === '/' ? ' JSON does not allow comments.' : ''
+        }`
+      case 'trailingComma':
+        return `Comma before ${found}${after}: remove it.`
+      case 'invalidNumber':
+        return 'Invalid number: JSON does not allow leading zeros or a dot without decimals.'
+      case 'invalidEscape':
+        return `Unknown escape sequence \\${error.found ?? ''}.`
+      case 'controlCharacter':
+        return 'Line break or tab inside a string: write it as \\n or \\t.'
+      case 'trailingContent':
+        return 'There is more text after the end of the JSON.'
+      case 'tooDeep':
+        return 'The JSON is nested too deep (more than 512 levels).'
+    }
+  },
 }
 
 export type Messages = typeof en
@@ -112,21 +148,38 @@ const es: Messages = {
   copied: 'Copiado',
   download: 'Descargar',
   errorPosition: (line: number, column: number) => `Línea ${line}, columna ${column}`,
-  jsonError: {
-    empty: () => 'Pega una respuesta JSON para empezar.',
-    unexpectedEnd: () => 'El JSON termina antes de tiempo: falta cerrar un corchete, una llave o unas comillas.',
-    unexpectedCharacter: (found: string) =>
-      found === "'"
-        ? 'Comilla simple inesperada: en JSON los textos y las claves van entre comillas dobles.'
-        : found === '/'
-          ? '/ inesperado: JSON no admite comentarios.'
-          : `${found} inesperado: puede que falte una coma, dos puntos o unas comillas.`,
-    trailingComma: () => 'Coma antes de cerrar un corchete o una llave: quítala.',
-    invalidNumber: () => 'Número no válido: JSON no admite ceros a la izquierda ni un punto sin decimales.',
-    invalidEscape: () => 'Secuencia de escape desconocida después de \\.',
-    controlCharacter: () => 'Salto de línea o tabulador dentro de un texto: escríbelo como \\n o \\t.',
-    trailingContent: () => 'Hay más texto después del final del JSON.',
-    tooDeep: () => 'El JSON tiene demasiados niveles (más de 512).',
+  jsonEmpty: 'Pega una respuesta JSON para empezar.',
+  jsonError: (error: JsonErrorInfo) => {
+    const after = error.key === undefined ? '' : ` después de “${error.key}”`
+    const found = describeFound(error.found)
+    switch (error.code) {
+      case 'empty':
+        return 'Pega una respuesta JSON para empezar.'
+      case 'unexpectedEnd':
+        return error.expected
+          ? `El JSON termina antes de tiempo: se esperaba ${EXPECTED_ES[error.expected]}${after}.`
+          : 'El JSON termina antes de tiempo: falta cerrar las comillas de un texto.'
+      case 'unexpectedCharacter':
+        return `Se esperaba ${EXPECTED_ES[error.expected ?? 'value']}${after}, pero hay ${found}.${
+          error.found === "'"
+            ? ' JSON usa comillas dobles.'
+            : error.found === '/'
+              ? ' JSON no admite comentarios.'
+              : ''
+        }`
+      case 'trailingComma':
+        return `Coma antes de ${found}${after}: quítala.`
+      case 'invalidNumber':
+        return 'Número no válido: JSON no admite ceros a la izquierda ni un punto sin decimales.'
+      case 'invalidEscape':
+        return `Secuencia de escape desconocida: \\${error.found ?? ''}.`
+      case 'controlCharacter':
+        return 'Salto de línea o tabulador dentro de un texto: escríbelo como \\n o \\t.'
+      case 'trailingContent':
+        return 'Hay más texto después del final del JSON.'
+      case 'tooDeep':
+        return 'El JSON tiene demasiados niveles (más de 512).'
+    }
   },
 }
 

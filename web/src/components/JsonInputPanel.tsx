@@ -24,7 +24,6 @@ export function JsonInputPanel({ value, onChange, result }: JsonInputPanelProps)
   const [dragging, setDragging] = useState(false)
   const [fileError, setFileError] = useState<string | null>(null)
   const error = result.ok ? null : result.error
-  const found = error?.found === undefined ? '' : JSON.stringify(error.found).slice(1, -1) || error.found
 
   function change(text: string) {
     setFileError(null)
@@ -119,10 +118,10 @@ export function JsonInputPanel({ value, onChange, result }: JsonInputPanelProps)
           ) : error === null ? (
             <p className="json-status json-status--ok">{t.inputValid}</p>
           ) : error.code === 'empty' ? (
-            <p className="json-status">{t.jsonError.empty()}</p>
+            <p className="json-status">{t.jsonEmpty}</p>
           ) : (
             <p className="json-status json-status--error" role="alert">
-              <strong>{t.errorPosition(error.line, error.column)}</strong> · {t.jsonError[error.code](found)}
+              <strong>{t.errorPosition(error.line, error.column)}</strong> · {t.jsonError(error)}
             </p>
           )
         }
