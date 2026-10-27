@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { AnalyzeOptions } from '../core/analyze.ts'
 import { editedField, fieldPath, hasEdits, updateEdit, type Edits, type FieldEdit } from '../core/edits.ts'
 import { classOf, innermostType, type Field, type PrimitiveType, type Schema, type TypeRef } from '../core/schema.ts'
 import type { SchemaWarning } from '../core/warnings.ts'
@@ -14,18 +15,32 @@ interface StructureTreeProps {
   edits: Edits
   onEditsChange: (edits: Edits) => void
   warnings: SchemaWarning[]
+  analysis: Required<Pick<AnalyzeOptions, 'detectFormats' | 'mergeIdentical'>>
+  onAnalysisChange: (analysis: StructureTreeProps['analysis']) => void
 }
 
-export function StructureTree({ schema, edits, onEditsChange, warnings }: StructureTreeProps) {
+export function StructureTree({ schema, edits, onEditsChange, warnings, analysis, onAnalysisChange }: StructureTreeProps) {
   const { t } = useI18n()
   // Paths of collapsed nodes; everything starts expanded
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
   // Path of the field whose editor is open
   const [editing, setEditing] = useState<string | null>(null)
 
+  const settings = (
+    <div className="structure__settings">
+      {(['detectFormats', 'mergeIdentical'] as const).map((setting) => (
+        <label key={setting}>
+          <input type="checkbox" checked={analysis[setting]} onChange={(event) => onAnalysisChange({ ...analysis, [setting]: event.target.checked })} />
+          {t[setting]}
+        </label>
+      ))}
+    </div>
+  )
+
   if (!schema) {
     return (
       <Pane title={t.structureTitle}>
+        {settings}
         <p className="structure__empty">{t.structureEmpty}</p>
       </Pane>
     )
@@ -181,6 +196,7 @@ export function StructureTree({ schema, edits, onEditsChange, warnings }: Struct
       }
       footer={<p className="structure__summary">{t.structureSummary(detected.classes.length, fieldCount)}</p>}
     >
+      {settings}
       <div className="structure">
         {warnings.length > 0 && (
           <details className="structure__warnings">

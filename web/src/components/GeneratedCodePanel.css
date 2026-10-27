@@ -14,6 +14,98 @@
   cursor: default;
 }
 
+.generated {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.generated__settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.75rem;
+}
+
+.generated__settings > label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--muted);
+}
+
+.generated__settings > label.generated__check {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 4px;
+  color: var(--text);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.generated__check input {
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.generated__files {
+  display: flex;
+  gap: 2px;
+  padding: 6px 8px 0;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.generated__file-tab {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  background: none;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.generated__file-tab[aria-selected='true'] {
+  border-color: var(--border);
+  background: var(--page-bg);
+  color: var(--text);
+}
+
+.generated__editor {
+  flex: 1;
+  min-height: 0;
+}
+
+.generated__usage {
+  border-top: 1px solid var(--border);
+  font-size: 0.8125rem;
+}
+
+.generated__usage summary {
+  padding: 8px 16px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.generated__usage pre {
+  max-height: 180px;
+  margin: 0;
+  padding: 0 16px 12px;
+  overflow: auto;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 .generated__footer {
   display: flex;
   flex-wrap: wrap;
@@ -22,9 +114,21 @@
   gap: 8px;
 }
 
+.generated__info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  min-width: 0;
+}
+
 .generated__file {
   color: var(--muted);
   font-family: var(--mono);
+}
+
+.generated__notes {
+  color: var(--warning);
+  cursor: help;
 }
 
 .generated__actions {

@@ -1,14 +1,14 @@
-import { json } from '@codemirror/lang-json'
-import { useRef, useState, type DragEvent } from 'react'
+import type { LanguageSupport } from '@codemirror/language'
+import { useEffect, useRef, useState, type DragEvent } from 'react'
 import { formatJson, minifyJson } from '../core/format.ts'
 import type { ParseResult } from '../core/json.ts'
 import { useI18n } from '../i18n/useI18n.ts'
+import { editorLanguage } from '../utils/editorLanguages.ts'
 import { EXAMPLE_JSON } from '../utils/example.ts'
 import { CodeEditor } from './CodeEditor.tsx'
 import { Pane } from './Pane.tsx'
 import './JsonInputPanel.css'
 
-const jsonLanguage = json()
 // Far above any API response; avoids freezing the tab with a huge file dropped by mistake
 const MAX_FILE_SIZE = 50 * 1024 * 1024
 
@@ -23,7 +23,12 @@ export function JsonInputPanel({ value, onChange, result }: JsonInputPanelProps)
   const fileInput = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
   const [fileError, setFileError] = useState<string | null>(null)
+  const [language, setLanguage] = useState<LanguageSupport | null>(null)
   const error = result.ok ? null : result.error
+
+  useEffect(() => {
+    void editorLanguage('json').then(setLanguage)
+  }, [])
 
   function change(text: string) {
     setFileError(null)
@@ -129,7 +134,7 @@ export function JsonInputPanel({ value, onChange, result }: JsonInputPanelProps)
         <CodeEditor
           value={value}
           onChange={change}
-          language={jsonLanguage}
+          language={language}
           label={t.inputLabel}
           placeholder={t.inputPlaceholder}
           errorLine={error && error.code !== 'empty' ? error.line : null}

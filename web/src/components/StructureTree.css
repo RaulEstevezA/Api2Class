@@ -247,3 +247,24 @@ span.structure__toggle {
 .structure__warnings code {
   font-family: var(--mono);
 }
+
+.structure__settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8125rem;
+}
+
+.structure__settings label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.structure__settings input {
+  margin: 0;
+  accent-color: var(--accent);
+}

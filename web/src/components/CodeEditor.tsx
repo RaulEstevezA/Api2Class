@@ -49,7 +49,8 @@ function errorLineDecoration(line: number | null) {
 interface CodeEditorProps {
   value: string
   onChange?: (value: string) => void
-  language: LanguageSupport
+  /** null while the highlighting is loading */
+  language: LanguageSupport | null
   readOnly?: boolean
   label: string
   placeholder?: string
@@ -107,7 +108,7 @@ export function CodeEditor({ value, onChange, language, readOnly = false, label,
   }, [])
 
   useEffect(() => {
-    view.current?.dispatch({ effects: compartments.current.language.reconfigure(language) })
+    view.current?.dispatch({ effects: compartments.current.language.reconfigure(language ?? []) })
   }, [language])
 
   useEffect(() => {

@@ -1,4 +1,5 @@
 import type { JsonErrorInfo, JsonExpected } from '../core/json.ts'
+import type { NameNote } from '../core/generators/types.ts'
 import type { SchemaWarning } from '../core/warnings.ts'
 
 const EXPECTED_EN: Record<JsonExpected, string> = {
@@ -63,7 +64,9 @@ const en = {
       ? `values of different types (${warning.counts!.map(([kind, count]) => `${kind} ×${count}`).join(', ')}), so it is left as any. Choose a type.`
       : warning.code === 'emptyArray'
         ? 'the array is always empty, so the type of its items is unknown. Choose a type.'
-        : 'it is always null, so its real type is unknown. Choose a type.',
+        : warning.code === 'emptyObject'
+          ? 'the object is always empty, so it is left as a generic map. Choose a type if it has fields.'
+          : 'it is always null, so its real type is unknown. Choose a type.',
   edit: 'Edit',
   editField: (key: string) => `Edit “${key}”`,
   includeField: (key: string) => `Include “${key}” in the code`,
@@ -76,6 +79,20 @@ const en = {
   resetEdits: 'Reset edits',
   expand: 'Expand',
   collapse: 'Collapse',
+  optionLabel: (id: string) => ({ style: 'Style', library: 'Library', serializer: 'Serializer', methods: 'Methods' })[id] ?? id,
+  noLibrary: 'none',
+  propertyNaming: 'Property names',
+  namingDefault: 'Language default',
+  namingKeep: 'As in the JSON',
+  multipleFiles: 'One file per class',
+  files: 'Generated files',
+  downloadZip: (n: number) => `Download .zip (${n} files)`,
+  usageTitle: 'Usage example',
+  namesChanged: (n: number) => (n === 1 ? '1 name changed' : `${n} names changed`),
+  nameNote: (note: NameNote) =>
+    `${note.key ? `${note.className}.${note.key}` : note.className} → ${note.name} (${note.reason === 'reserved' ? 'reserved word' : 'not a valid name'})`,
+  detectFormats: 'Detect dates and UUIDs',
+  mergeIdentical: 'Reuse classes with the same fields',
   outputTitle: 'Generated code',
   outputLabel: (language: string) => `Generated ${language} code`,
   outputEmpty: 'The generated code will appear here.',
@@ -157,7 +174,9 @@ const es: Messages = {
       ? `valores de tipos distintos (${warning.counts!.map(([kind, count]) => `${kind} ×${count}`).join(', ')}), así que queda como any. Elige un tipo.`
       : warning.code === 'emptyArray'
         ? 'el array siempre está vacío, así que no se sabe el tipo de sus elementos. Elige un tipo.'
-        : 'siempre es null, así que no se sabe su tipo real. Elige un tipo.',
+        : warning.code === 'emptyObject'
+          ? 'el objeto siempre está vacío, así que queda como mapa genérico. Elige un tipo si tiene campos.'
+          : 'siempre es null, así que no se sabe su tipo real. Elige un tipo.',
   edit: 'Editar',
   editField: (key: string) => `Editar “${key}”`,
   includeField: (key: string) => `Incluir “${key}” en el código`,
@@ -170,6 +189,20 @@ const es: Messages = {
   resetEdits: 'Restablecer',
   expand: 'Desplegar',
   collapse: 'Plegar',
+  optionLabel: (id: string) => ({ style: 'Estilo', library: 'Librería', serializer: 'Serializador', methods: 'Métodos' })[id] ?? id,
+  noLibrary: 'ninguna',
+  propertyNaming: 'Nombres de propiedades',
+  namingDefault: 'Por defecto del lenguaje',
+  namingKeep: 'Como en el JSON',
+  multipleFiles: 'Un archivo por clase',
+  files: 'Archivos generados',
+  downloadZip: (n: number) => `Descargar .zip (${n} archivos)`,
+  usageTitle: 'Ejemplo de uso',
+  namesChanged: (n: number) => (n === 1 ? '1 nombre cambiado' : `${n} nombres cambiados`),
+  nameNote: (note: NameNote) =>
+    `${note.key ? `${note.className}.${note.key}` : note.className} → ${note.name} (${note.reason === 'reserved' ? 'palabra reservada' : 'nombre no válido'})`,
+  detectFormats: 'Detectar fechas y UUID',
+  mergeIdentical: 'Reutilizar clases con los mismos campos',
   outputTitle: 'Código generado',
   outputLabel: (language: string) => `Código ${language} generado`,
   outputEmpty: 'El código generado aparecerá aquí.',
