@@ -17,6 +17,8 @@ export type Observed = Partial<Record<ValueKind, number>>
 export interface Field {
   /** The key as written in the JSON */
   key: string
+  /** Property name chosen by the user, used as is instead of converting the key */
+  name?: string
   type: TypeRef
   /** Missing in some of the objects it was found in */
   optional: boolean

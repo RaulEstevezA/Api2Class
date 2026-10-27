@@ -7,11 +7,12 @@ export function classNames(schema: Schema, reserved: ReadonlySet<string>): Map<s
   return new Map(schema.classes.map((item) => [item.id, uniqueName(safeIdentifier(item.name, reserved, 'Model'), used)]))
 }
 
-/** Property names of a class valid in the target language, in field order. Two keys that end up with
- * the same name (`userId` and `user_id` in snake_case) get a number. */
+/** Property names of a class valid in the target language, in field order. A name chosen by the user
+ * is used as is; otherwise the key is converted. Two fields that end up with the same name (`userId`
+ * and `user_id` in snake_case) get a number. */
 export function propertyNames(item: ClassDef, convert: (key: string) => string, reserved: ReadonlySet<string>): string[] {
   const used = new Set<string>()
-  return item.fields.map((field) => uniqueName(safeIdentifier(convert(field.key), reserved, 'field'), used))
+  return item.fields.map((field) => uniqueName(safeIdentifier(field.name ?? convert(field.key), reserved, 'field'), used))
 }
 
 /** Text for a JSON without objects, such as `[1, 2, 3]`: there is nothing to generate. */

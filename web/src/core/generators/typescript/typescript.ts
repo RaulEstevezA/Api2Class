@@ -39,9 +39,12 @@ function generate(schema: Schema) {
   // Interfaces describe the JSON as it is, so properties keep their keys (quoted when they need it)
   const blocks = schema.classes.map((item) => {
     const lines = item.fields.map((field) => {
-      const key = /^[A-Za-z_$][\w$]*$/.test(field.key) ? field.key : JSON.stringify(field.key)
+      const name = field.name ?? field.key
+      const key = /^[A-Za-z_$][\w$]*$/.test(name) ? name : JSON.stringify(name)
       const type = typeName(field.type)
-      return `${INDENT}${key}${field.optional ? '?' : ''}: ${field.nullable && type !== 'null' ? `${type} | null` : type};`
+      const line = `${INDENT}${key}${field.optional ? '?' : ''}: ${field.nullable && type !== 'null' ? `${type} | null` : type};`
+      // A renamed property no longer matches the JSON: say which key it comes from
+      return name === field.key ? line : `${line} // JSON: ${JSON.stringify(field.key)}`
     })
     const header = `export interface ${names.get(item.id)} {`
     return lines.length > 0 ? `${header}\n${lines.join('\n')}\n}` : `${header}}`

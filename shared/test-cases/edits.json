@@ -1,0 +1,69 @@
+[
+  {
+    "description": "rename classes and properties, change types and flags",
+    "input": {
+      "id": 15,
+      "first_name": "Raul",
+      "address": { "city": "Vinaros", "zip": "12500" },
+      "orders": [{ "id": 101, "total": 29.95 }]
+    },
+    "edits": {
+      "classes": { "#": { "name": "UserResponse" }, "#/orders/[]": { "name": "Purchase" } },
+      "fields": {
+        "#/id": { "type": "string" },
+        "#/first_name": { "name": "givenName", "nullable": true },
+        "#/address/zip": { "optional": true },
+        "#/orders/[]/total": { "type": "string" }
+      }
+    },
+    "expected": {
+      "root": "UserResponse",
+      "classes": [
+        ["UserResponse", { "id": "string", "first_name": "string | null as givenName", "address": "Address", "orders": "Purchase[]" }],
+        ["Address", { "city": "string", "zip": "string (optional)" }],
+        ["Purchase", { "id": "integer", "total": "string" }]
+      ]
+    }
+  },
+  {
+    "description": "excluded fields are removed, and so are the classes nothing uses any more",
+    "input": {
+      "id": 1,
+      "debug_info": { "trace": "abc", "nested": { "x": 1 } },
+      "internal_id": "x9",
+      "tags": [{ "name": "a" }]
+    },
+    "edits": { "classes": {}, "fields": { "#/debug_info": { "excluded": true }, "#/internal_id": { "excluded": true } } },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        ["Root", { "id": "integer", "tags": "Tag[]" }],
+        ["Tag", { "name": "string" }]
+      ]
+    }
+  },
+  {
+    "description": "a nested object can become a generic map instead of a class, arrays stay arrays",
+    "input": { "metadata": { "source": "app", "version": 3 }, "orders": [{ "id": 1 }] },
+    "edits": { "classes": {}, "fields": { "#/metadata": { "type": "object" }, "#/orders": { "type": "object" } } },
+    "expected": { "root": "Root", "classes": [["Root", { "metadata": "object", "orders": "object[]" }]] }
+  },
+  {
+    "description": "edits of a class shared by several objects apply wherever it is used",
+    "input": { "billing_address": { "city": "Vinaros" }, "shipping_address": { "city": "Castellon" } },
+    "edits": { "classes": { "#/billing_address": { "name": "PostalAddress" } }, "fields": { "#/billing_address/city": { "name": "town" } } },
+    "expected": {
+      "root": "Root",
+      "classes": [
+        ["Root", { "billing_address": "PostalAddress", "shipping_address": "PostalAddress" }],
+        ["PostalAddress", { "city": "string as town" }]
+      ]
+    }
+  },
+  {
+    "description": "edits for paths that no longer exist are ignored, empty names keep the detected one",
+    "input": { "id": 1 },
+    "edits": { "classes": { "#": { "name": "  " }, "#/gone": { "name": "Gone" } }, "fields": { "#/missing": { "excluded": true }, "#/id": { "name": "" } } },
+    "expected": { "root": "Root", "classes": [["Root", { "id": "integer" }]] }
+  }
+]
