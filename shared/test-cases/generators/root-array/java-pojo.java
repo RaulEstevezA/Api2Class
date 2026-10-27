@@ -1,9 +1,10 @@
 import java.util.List;
+import java.util.Map;
 
 public class Root {
     private Long id;
     private Object value;
-    private Meta meta;
+    private Map<String, Object> meta;
     private List<List<Long>> matrix;
     private List<Point> points;
 
@@ -23,11 +24,11 @@ public class Root {
         this.value = value;
     }
 
-    public Meta getMeta() {
+    public Map<String, Object> getMeta() {
         return meta;
     }
 
-    public void setMeta(Meta meta) {
+    public void setMeta(Map<String, Object> meta) {
         this.meta = meta;
     }
 
@@ -46,9 +47,6 @@ public class Root {
     public void setPoints(List<Point> points) {
         this.points = points;
     }
-}
-
-class Meta {
 }
 
 class Point {
