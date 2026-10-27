@@ -5,6 +5,7 @@ from .csharp import CSHARP
 from .dart import DART
 from .go import GO
 from .java import JAVA
+from .jsonschema import JSON_SCHEMA
 from .kotlin import KOTLIN
 from .php import PHP
 from .python import PYTHON
