@@ -24,7 +24,7 @@ Pegar el JSON  →  Entender la estructura detectada  →  Ajustarla  →  Gener
 {
   "id": 15,
   "name": "Raul",
-  "address": { "city": "Vinaros", "postal_code": "12500" },
+  "address": { "city": "Villaluna", "postal_code": "99001" },
   "orders": [{ "id": 101, "total": 29.95 }]
 }
 ```

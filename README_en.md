@@ -24,7 +24,7 @@ Paste the JSON  →  Understand the structure detected  →  Customize it  →  
 {
   "id": 15,
   "name": "Raul",
-  "address": { "city": "Vinaros", "postal_code": "12500" },
+  "address": { "city": "Villaluna", "postal_code": "99001" },
   "orders": [{ "id": 101, "total": 29.95 }]
 }
 ```
