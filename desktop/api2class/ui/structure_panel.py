@@ -43,8 +43,10 @@ class StructurePanel(Pane):
         self.header.addWidget(self.reset)
 
         options = section()
-        row = QHBoxLayout(options)
-        row.setContentsMargins(14, 0, 14, 8)
+        # One under the other, as in the web: side by side they do not fit in a narrow pane
+        row = QVBoxLayout(options)
+        row.setContentsMargins(16, 0, 16, 10)
+        row.setSpacing(6)
         self.detect_formats = QCheckBox()
         self.merge_identical = QCheckBox()
         for box in (self.detect_formats, self.merge_identical):
