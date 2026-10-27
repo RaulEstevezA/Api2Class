@@ -1,0 +1,288 @@
+{
+  "words": [
+    {
+      "input": "postal_code",
+      "expected": [
+        "postal",
+        "code"
+      ]
+    },
+    {
+      "input": "postalCode",
+      "expected": [
+        "postal",
+        "Code"
+      ]
+    },
+    {
+      "input": "PostalCode",
+      "expected": [
+        "Postal",
+        "Code"
+      ]
+    },
+    {
+      "input": "postal-code",
+      "expected": [
+        "postal",
+        "code"
+      ]
+    },
+    {
+      "input": "Postal Code",
+      "expected": [
+        "Postal",
+        "Code"
+      ]
+    },
+    {
+      "input": "userID",
+      "expected": [
+        "user",
+        "ID"
+      ]
+    },
+    {
+      "input": "HTTPResponse",
+      "expected": [
+        "HTTP",
+        "Response"
+      ]
+    },
+    {
+      "input": "address2",
+      "expected": [
+        "address2"
+      ]
+    },
+    {
+      "input": "line2Text",
+      "expected": [
+        "line2",
+        "Text"
+      ]
+    },
+    {
+      "input": "teléfono_móvil",
+      "expected": [
+        "telefono",
+        "movil"
+      ]
+    },
+    {
+      "input": "  __id__ ",
+      "expected": [
+        "id"
+      ]
+    },
+    {
+      "input": "@type",
+      "expected": [
+        "type"
+      ]
+    },
+    {
+      "input": "",
+      "expected": []
+    },
+    {
+      "input": "$$$",
+      "expected": []
+    }
+  ],
+  "PascalCase": [
+    {
+      "input": "postal_code",
+      "expected": "PostalCode"
+    },
+    {
+      "input": "postalCode",
+      "expected": "PostalCode"
+    },
+    {
+      "input": "userID",
+      "expected": "UserId"
+    },
+    {
+      "input": "HTTPResponse",
+      "expected": "HttpResponse"
+    },
+    {
+      "input": "name",
+      "expected": "Name"
+    },
+    {
+      "input": "2fa_enabled",
+      "expected": "2faEnabled"
+    }
+  ],
+  "camelCase": [
+    {
+      "input": "postal_code",
+      "expected": "postalCode"
+    },
+    {
+      "input": "PostalCode",
+      "expected": "postalCode"
+    },
+    {
+      "input": "user_ID",
+      "expected": "userId"
+    },
+    {
+      "input": "URL",
+      "expected": "url"
+    },
+    {
+      "input": "id",
+      "expected": "id"
+    },
+    {
+      "input": "created-at",
+      "expected": "createdAt"
+    }
+  ],
+  "snake_case": [
+    {
+      "input": "postalCode",
+      "expected": "postal_code"
+    },
+    {
+      "input": "PostalCode",
+      "expected": "postal_code"
+    },
+    {
+      "input": "userID",
+      "expected": "user_id"
+    },
+    {
+      "input": "HTTPResponse",
+      "expected": "http_response"
+    },
+    {
+      "input": "postal_code",
+      "expected": "postal_code"
+    },
+    {
+      "input": "Created At",
+      "expected": "created_at"
+    }
+  ],
+  "singular": [
+    {
+      "input": "users",
+      "expected": "user"
+    },
+    {
+      "input": "orders",
+      "expected": "order"
+    },
+    {
+      "input": "categories",
+      "expected": "category"
+    },
+    {
+      "input": "addresses",
+      "expected": "address"
+    },
+    {
+      "input": "boxes",
+      "expected": "box"
+    },
+    {
+      "input": "matches",
+      "expected": "match"
+    },
+    {
+      "input": "statuses",
+      "expected": "status"
+    },
+    {
+      "input": "responses",
+      "expected": "response"
+    },
+    {
+      "input": "movies",
+      "expected": "movie"
+    },
+    {
+      "input": "keys",
+      "expected": "key"
+    },
+    {
+      "input": "people",
+      "expected": "person"
+    },
+    {
+      "input": "Children",
+      "expected": "Child"
+    },
+    {
+      "input": "address",
+      "expected": "address"
+    },
+    {
+      "input": "status",
+      "expected": "status"
+    },
+    {
+      "input": "data",
+      "expected": "data"
+    },
+    {
+      "input": "item",
+      "expected": "item"
+    },
+    {
+      "input": "CATEGORIES",
+      "expected": "CATEGORY"
+    }
+  ],
+  "className": [
+    {
+      "input": "address",
+      "arrayItem": false,
+      "expected": "Address"
+    },
+    {
+      "input": "users",
+      "arrayItem": true,
+      "expected": "User"
+    },
+    {
+      "input": "order_items",
+      "arrayItem": true,
+      "expected": "OrderItem"
+    },
+    {
+      "input": "lineItems",
+      "arrayItem": true,
+      "expected": "LineItem"
+    },
+    {
+      "input": "data",
+      "arrayItem": true,
+      "expected": "DataItem"
+    },
+    {
+      "input": "item",
+      "arrayItem": true,
+      "expected": "ItemItem"
+    },
+    {
+      "input": "billing_address",
+      "arrayItem": false,
+      "expected": "BillingAddress"
+    },
+    {
+      "input": "",
+      "arrayItem": false,
+      "expected": "Object"
+    },
+    {
+      "input": "",
+      "arrayItem": true,
+      "expected": "Item"
+    }
+  ]
+}
