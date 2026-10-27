@@ -15,6 +15,10 @@ export interface LanguageRules {
   adjust?: (name: string) => string
   /** Any string can be a property name (TypeScript quotes them), so they are never escaped */
   anyPropertyName?: boolean
+  /** Words that cannot be class names, when they differ from `reserved` (PHP) */
+  reservedClasses?: ReadonlySet<string>
+  /** Reserved words match whatever their case (PHP: list, List, LIST) */
+  caseInsensitive?: boolean
 }
 
 export interface Property {
@@ -33,14 +37,18 @@ export function createNames(schema: Schema, settings: GenerateSettings, rules: L
   const digitPrefix = rules.digitPrefix ?? '_'
   const escape = rules.escapeReserved ?? ((name: string) => `${name}_`)
 
-  function valid(name: string, fallback: string, note: Omit<NameNote, 'name' | 'reason'> | null): string {
+  function isReserved(name: string, words: ReadonlySet<string>): boolean {
+    return words.has(rules.caseInsensitive ? name.toLowerCase() : name)
+  }
+
+  function valid(name: string, fallback: string, note: Omit<NameNote, 'name' | 'reason'> | null, words = rules.reserved): string {
     let result = name === '' ? fallback : name
     let reason: NameNote['reason'] | null = name === '' ? 'invalid' : null
     if (/^\p{N}/u.test(result)) {
       result = digitPrefix + result
       reason = 'invalid'
     }
-    if (rules.reserved.has(result)) {
+    if (isReserved(result, words)) {
       result = escape(result)
       reason = 'reserved'
     }
@@ -52,7 +60,10 @@ export function createNames(schema: Schema, settings: GenerateSettings, rules: L
   const classNames = new Map(
     schema.classes.map((item) => [
       item.id,
-      uniqueName(valid(safeIdentifier(item.name, new Set(), 'Model'), 'Model', { className: item.name, key: '' }), usedClasses),
+      uniqueName(
+        valid(safeIdentifier(item.name, new Set(), 'Model'), 'Model', { className: item.name, key: '' }, rules.reservedClasses ?? rules.reserved),
+        usedClasses,
+      ),
     ]),
   )
 
