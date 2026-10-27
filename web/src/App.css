@@ -30,11 +30,67 @@
   margin-top: 16px;
 }
 
+.workspace__tabs {
+  display: none;
+}
+
+/* Narrow screens: one pane at a time, chosen with tabs */
 @media (max-width: 1100px) {
+  .workspace__tabs {
+    display: flex;
+    gap: 4px;
+    margin-top: 16px;
+    padding: 4px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .workspace__tab {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 6px;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .workspace__tab[aria-selected='true'] {
+    background: var(--surface-raised);
+    color: var(--text);
+  }
+
+  .workspace__tab-badge {
+    min-width: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--warning-soft);
+    color: var(--warning);
+    font-size: 0.75rem;
+  }
+
   .workspace {
     grid-template-columns: minmax(0, 1fr);
     /* A fixed height, so each editor scrolls inside its pane */
-    grid-auto-rows: 520px;
-    height: auto;
+    height: max(480px, calc(100vh - 140px));
+    margin-top: 8px;
+  }
+
+  .workspace[data-tab] > * {
+    display: none;
+  }
+
+  .workspace[data-tab='input'] > :nth-child(1),
+  .workspace[data-tab='structure'] > :nth-child(2),
+  .workspace[data-tab='output'] > :nth-child(3) {
+    display: flex;
   }
 }

@@ -13,10 +13,15 @@ import type { GenerateSettings, PropertyNaming } from './core/generators/types.t
 import { parseJson } from './core/json.ts'
 import { schemaWarnings } from './core/warnings.ts'
 import { useStoredState } from './hooks/useStoredState.ts'
+import { useI18n } from './i18n/useI18n.ts'
+
+type WorkspaceTab = 'input' | 'structure' | 'output'
+const TABS: WorkspaceTab[] = ['input', 'structure', 'output']
 
 type AnalysisSettings = Required<Pick<AnalyzeOptions, 'detectFormats' | 'mergeIdentical'>>
 
 function App() {
+  const { t } = useI18n()
   // Kept only in memory: pasted API responses may contain personal data or tokens
   const [input, setInput] = useState('')
   // Changes to the detected model; also only in memory, since they name the user's data
@@ -27,6 +32,8 @@ function App() {
   const [options, setOptions] = useStoredState<Record<string, Record<string, string>>>('api2class.options', () => ({}))
   const [naming, setNaming] = useStoredState<PropertyNaming>('api2class.naming', () => 'default')
   const [multipleFiles, setMultipleFiles] = useStoredState('api2class.multipleFiles', () => false)
+  // On narrow screens only one pane is shown at a time
+  const [tab, setTab] = useState<WorkspaceTab>('input')
 
   // Large responses are parsed after the keystroke is painted, so typing stays smooth
   const deferredInput = useDeferredValue(input)
@@ -47,7 +54,15 @@ function App() {
       <AppHeader wide />
       <main className="app__main app__main--wide">
         <IntroPanel />
-        <div className="workspace">
+        <div className="workspace__tabs" role="tablist" aria-label={t.workspaceTabs}>
+          {TABS.map((id) => (
+            <button key={id} type="button" role="tab" aria-selected={tab === id} className="workspace__tab" onClick={() => setTab(id)}>
+              {t.tabs[id]}
+              {id === 'structure' && warnings.length > 0 && <span className="workspace__tab-badge">{warnings.length}</span>}
+            </button>
+          ))}
+        </div>
+        <div className="workspace" data-tab={tab}>
           <JsonInputPanel
             value={input}
             onChange={(text) => {
