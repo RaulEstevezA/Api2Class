@@ -5,6 +5,7 @@ import { AppHeader } from './components/AppHeader.tsx'
 import { GeneratedCodePanel } from './components/GeneratedCodePanel.tsx'
 import { IntroPanel } from './components/IntroPanel.tsx'
 import { JsonInputPanel } from './components/JsonInputPanel.tsx'
+import { LinksPanel } from './components/LinksPanel.tsx'
 import { StructureTree } from './components/StructureTree.tsx'
 import { analyze, type AnalyzeOptions } from './core/analyze.ts'
 import { applyEdits, NO_EDITS, type Edits } from './core/edits.ts'
@@ -93,6 +94,7 @@ function App() {
             rootName={schema?.classes[0]?.name ?? ''}
           />
         </div>
+        <LinksPanel />
       </main>
       <AppFooter />
     </div>

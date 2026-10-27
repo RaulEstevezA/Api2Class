@@ -1,0 +1,25 @@
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 24px 32px;
+}
+
+.links__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.links__note {
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .links {
+    padding: 20px 16px;
+  }
+}

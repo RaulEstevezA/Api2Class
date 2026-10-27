@@ -1,10 +1,8 @@
 import { useI18n } from '../i18n/useI18n.ts'
 import './IntroPanel.css'
 
-const TOOLS_URL = 'https://raulesteveza.github.io/tools/'
-const SOURCE_URL = 'https://github.com/RaulEstevezA/Api2Class'
-
-/** Presentation strip above the workspace, styled like the portfolio's project windows. */
+/** Presentation strip above the workspace, styled like the portfolio's project windows. Links and
+ * downloads are in LinksPanel, under the workspace. */
 export function IntroPanel() {
   const { t } = useI18n()
 
@@ -20,15 +18,6 @@ export function IntroPanel() {
         <p className="intro__privacy" role="note">
           {t.privacyNote}
         </p>
-      </div>
-
-      <div className="intro__actions">
-        <a className="button" href={SOURCE_URL} target="_blank" rel="noopener">
-          {t.introCode}
-        </a>
-        <a className="button" href={TOOLS_URL}>
-          {t.introAllTools}
-        </a>
       </div>
     </section>
   )
