@@ -1,15 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import cases from '../../../shared/test-cases/analyze.json'
-import { analyze } from './analyze.ts'
+import { analyze, type AnalyzeOptions } from './analyze.ts'
 import { parseJson } from './json.ts'
-import { describeType, type Field, type Schema } from './schema.ts'
+import { describeType, type Field, type Observed, type Schema } from './schema.ts'
 
 interface AnalyzeCase {
   description: string
   input?: unknown
   inputText?: string
   rootName?: string
-  expected: { root: string; classes: [string, Record<string, string>][] }
+  options?: AnalyzeOptions
+  expected?: { root: string; classes: [string, Record<string, string>][] }
+  expectedIds?: string[]
+  /** By field key, in any class */
+  expectedObserved?: Record<string, { observed: Observed; itemsObserved?: Observed }>
 }
 
 function describeField(field: Field, schema: Schema): string {
@@ -25,19 +29,23 @@ function summary(schema: Schema) {
 }
 
 describe('analyze', () => {
-  it.each(cases as AnalyzeCase[])('$description', ({ input, inputText, rootName, expected }) => {
+  it.each(cases as AnalyzeCase[])('$description', ({ input, inputText, rootName, options, expected, expectedIds, expectedObserved }) => {
     const parsed = parseJson(inputText ?? JSON.stringify(input))
     if (!parsed.ok) throw new Error('Invalid test input')
-    expect(summary(analyze(parsed.value, rootName))).toEqual({
-      root: expected.root,
-      classes: expected.classes.map(([name, fields]) => [name, Object.entries(fields)]),
-    })
+    const schema = analyze(parsed.value, { rootName, ...options })
+    if (expected) {
+      expect(summary(schema)).toEqual({
+        root: expected.root,
+        classes: expected.classes.map(([name, fields]) => [name, Object.entries(fields)]),
+      })
+    }
+    if (expectedIds) expect(schema.classes.map((item) => item.id)).toEqual(expectedIds)
+    if (expectedObserved) {
+      const fields = new Map(schema.classes.flatMap((item) => item.fields.map((field) => [field.key, field])))
+      for (const [key, { observed, itemsObserved }] of Object.entries(expectedObserved)) {
+        expect(fields.get(key)?.observed, key).toEqual(observed)
+        expect(fields.get(key)?.itemsObserved, key).toEqual(itemsObserved)
+      }
+    }
   })
-})
-
-it('gives every class a different id', () => {
-  const parsed = parseJson('{"a": {"x": 1}, "b": [{"y": 2}]}')
-  if (!parsed.ok) throw new Error('Invalid test input')
-  const ids = analyze(parsed.value).classes.map((item) => item.id)
-  expect(new Set(ids).size).toBe(ids.length)
 })

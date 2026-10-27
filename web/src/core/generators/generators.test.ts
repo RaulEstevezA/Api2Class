@@ -43,6 +43,6 @@ it('there are generator cases', () => {
 it('names the file after the root class', () => {
   const parsed = parseJson('{"id": 1}')
   if (!parsed.ok) throw new Error('Invalid input')
-  const fileNames = generators.map((generator) => generator.generate(analyze(parsed.value, 'UserProfile'), { style: generator.styles[0].id }).fileName)
+  const fileNames = generators.map((generator) => generator.generate(analyze(parsed.value, { rootName: 'UserProfile' }), { style: generator.styles[0].id }).fileName)
   expect(fileNames).toEqual(['user_profile.py', 'UserProfile.java', 'UserProfile.ts'])
 })

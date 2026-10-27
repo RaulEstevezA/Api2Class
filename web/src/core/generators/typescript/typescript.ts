@@ -1,4 +1,4 @@
-import type { Schema, TypeRef } from '../../schema.ts'
+import type { PrimitiveType, Schema, TypeRef } from '../../schema.ts'
 import { classNames, noClassesMessage } from '../common.ts'
 import type { Generator } from '../types.ts'
 
@@ -9,7 +9,19 @@ const RESERVED_TYPES = new Set(
   ),
 )
 
-const PRIMITIVES = { string: 'string', integer: 'number', float: 'number', boolean: 'boolean', null: 'null', any: 'unknown' }
+// Dates and UUIDs arrive as strings: JSON.parse does not turn them into Date objects
+const PRIMITIVES: Record<PrimitiveType, string> = {
+  string: 'string',
+  integer: 'number',
+  float: 'number',
+  boolean: 'boolean',
+  date: 'string',
+  datetime: 'string',
+  uuid: 'string',
+  object: 'Record<string, unknown>',
+  null: 'null',
+  any: 'unknown',
+}
 
 const INDENT = '  '
 

@@ -1,5 +1,5 @@
 import { toSnakeCase } from '../../naming.ts'
-import type { Schema, TypeRef } from '../../schema.ts'
+import type { PrimitiveType, Schema, TypeRef } from '../../schema.ts'
 import { classNames, noClassesMessage, propertyNames } from '../common.ts'
 import type { Generator } from '../types.ts'
 
@@ -9,19 +9,30 @@ const KEYWORDS = new Set(
   ),
 )
 
-const PRIMITIVES = { string: 'str', integer: 'int', float: 'float', boolean: 'bool', null: 'None', any: 'Any' }
+const PRIMITIVES: Record<PrimitiveType, string> = {
+  string: 'str',
+  integer: 'int',
+  float: 'float',
+  boolean: 'bool',
+  date: 'date',
+  datetime: 'datetime',
+  uuid: 'UUID',
+  object: 'dict[str, Any]',
+  null: 'None',
+  any: 'Any',
+}
 
 function generate(schema: Schema) {
   const fileName = `${toSnakeCase(schema.classes[0]?.name ?? '') || 'models'}.py`
   if (schema.classes.length === 0) return { fileName, code: `# ${noClassesMessage(schema)}\n` }
 
   const names = classNames(schema, KEYWORDS)
-  let usesAny = false
+  const used = new Set<PrimitiveType>()
 
   function typeName(type: TypeRef): string {
     if (type.kind === 'class') return names.get(type.classId)!
     if (type.kind === 'array') return `list[${typeName(type.items)}${type.itemsNullable ? ' | None' : ''}]`
-    if (type.name === 'any') usesAny = true
+    used.add(type.name)
     return PRIMITIVES[type.name]
   }
 
@@ -39,11 +50,14 @@ function generate(schema: Schema) {
     return ['@dataclass', `class ${names.get(item.id)}:`, ...(body.length > 0 ? body : ['    pass'])].join('\n')
   })
 
+  const dates = [...(used.has('date') ? ['date'] : []), ...(used.has('datetime') ? ['datetime'] : [])]
   const imports = [
     'from __future__ import annotations',
     '',
     'from dataclasses import dataclass',
-    ...(usesAny ? ['from typing import Any'] : []),
+    ...(dates.length > 0 ? [`from datetime import ${dates.join(', ')}`] : []),
+    ...(used.has('any') || used.has('object') ? ['from typing import Any'] : []),
+    ...(used.has('uuid') ? ['from uuid import UUID'] : []),
   ]
   return { fileName, code: `${imports.join('\n')}\n\n\n${blocks.join('\n\n\n')}\n` }
 }

@@ -1,5 +1,5 @@
 import { toCamelCase } from '../../naming.ts'
-import type { Schema, TypeRef } from '../../schema.ts'
+import type { PrimitiveType, Schema, TypeRef } from '../../schema.ts'
 import { classNames, noClassesMessage, propertyNames } from '../common.ts'
 import type { Generator } from '../types.ts'
 
@@ -10,7 +10,25 @@ const KEYWORDS = new Set(
 )
 
 // Boxed types, so any field can be null
-const PRIMITIVES = { string: 'String', integer: 'Long', float: 'Double', boolean: 'Boolean', null: 'Object', any: 'Object' }
+const PRIMITIVES: Record<PrimitiveType, string> = {
+  string: 'String',
+  integer: 'Long',
+  float: 'Double',
+  boolean: 'Boolean',
+  date: 'LocalDate',
+  datetime: 'OffsetDateTime',
+  uuid: 'UUID',
+  object: 'Map<String, Object>',
+  null: 'Object',
+  any: 'Object',
+}
+
+const IMPORTS: Partial<Record<PrimitiveType, string>> = {
+  date: 'java.time.LocalDate',
+  datetime: 'java.time.OffsetDateTime',
+  object: 'java.util.Map',
+  uuid: 'java.util.UUID',
+}
 
 const INDENT = '    '
 
@@ -18,15 +36,16 @@ function generate(schema: Schema) {
   if (schema.classes.length === 0) return { fileName: 'Model.java', code: `// ${noClassesMessage(schema)}\n` }
 
   const names = classNames(schema, KEYWORDS)
-  let usesList = false
-  let usesJsonProperty = false
+  const imports = new Set<string>()
 
   function typeName(type: TypeRef): string {
     if (type.kind === 'class') return names.get(type.classId)!
     if (type.kind === 'array') {
-      usesList = true
+      imports.add('java.util.List')
       return `List<${typeName(type.items)}>`
     }
+    const path = IMPORTS[type.name]
+    if (path) imports.add(path)
     return PRIMITIVES[type.name]
   }
 
@@ -37,7 +56,7 @@ function generate(schema: Schema) {
       const declaration = `${INDENT}private ${types[index]} ${properties[index]};`
       if (properties[index] === field.key) return declaration
       // Jackson reads and writes the field with its JSON key
-      usesJsonProperty = true
+      imports.add('com.fasterxml.jackson.annotation.JsonProperty')
       return `${INDENT}@JsonProperty(${JSON.stringify(field.key)})\n${declaration}`
     })
     const accessors = properties.map((property, index) => {
@@ -59,11 +78,11 @@ function generate(schema: Schema) {
     return body.length > 0 ? `${header}\n${body.join('\n\n')}\n}` : `${header}\n}`
   })
 
-  const imports = [
-    ...(usesJsonProperty ? ['import com.fasterxml.jackson.annotation.JsonProperty;'] : []),
-    ...(usesList ? ['import java.util.List;'] : []),
-  ]
-  const code = `${imports.length > 0 ? `${imports.join('\n')}\n\n` : ''}${blocks.join('\n\n')}\n`
+  const importLines = [...imports]
+    .sort()
+    .map((path) => `import ${path};`)
+    .join('\n')
+  const code = `${importLines ? `${importLines}\n\n` : ''}${blocks.join('\n\n')}\n`
   return { fileName: `${names.get(schema.classes[0].id)}.java`, code }
 }
 
