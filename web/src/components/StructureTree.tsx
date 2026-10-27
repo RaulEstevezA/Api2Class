@@ -1,27 +1,37 @@
 import { useState } from 'react'
-import { describeType, findClass, type Field, type Schema, type TypeRef } from '../core/schema.ts'
+import { editedField, fieldPath, hasEdits, updateEdit, type Edits, type FieldEdit } from '../core/edits.ts'
+import { classOf, innermostType, type Field, type PrimitiveType, type Schema, type TypeRef } from '../core/schema.ts'
+import type { SchemaWarning } from '../core/warnings.ts'
 import { useI18n } from '../i18n/useI18n.ts'
 import { Pane } from './Pane.tsx'
 import './StructureTree.css'
 
-/** The class a type leads to, directly or through arrays. */
-function classOf(type: TypeRef): string | null {
-  if (type.kind === 'class') return type.classId
-  if (type.kind === 'array') return classOf(type.items)
-  return null
+const TYPE_CHOICES: PrimitiveType[] = ['string', 'integer', 'float', 'boolean', 'date', 'datetime', 'uuid', 'object', 'any']
+
+interface StructureTreeProps {
+  /** As detected: the tree also shows excluded fields, so they can be included again */
+  schema: Schema | null
+  edits: Edits
+  onEditsChange: (edits: Edits) => void
+  warnings: SchemaWarning[]
 }
 
-/** The primitive at the bottom of a type, to flag the ones that need a look (any, null). */
-function primitiveOf(type: TypeRef): string | null {
-  if (type.kind === 'primitive') return type.name
-  if (type.kind === 'array') return primitiveOf(type.items)
-  return null
-}
-
-export function StructureTree({ schema }: { schema: Schema | null }) {
+export function StructureTree({ schema, edits, onEditsChange, warnings }: StructureTreeProps) {
   const { t } = useI18n()
   // Paths of collapsed nodes; everything starts expanded
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
+  // Path of the field whose editor is open
+  const [editing, setEditing] = useState<string | null>(null)
+
+  if (!schema) {
+    return (
+      <Pane title={t.structureTitle}>
+        <p className="structure__empty">{t.structureEmpty}</p>
+      </Pane>
+    )
+  }
+  const detected = schema
+  const byId = new Map(detected.classes.map((item) => [item.id, item]))
 
   function toggle(path: string) {
     setCollapsed((current) => {
@@ -31,67 +41,179 @@ export function StructureTree({ schema }: { schema: Schema | null }) {
     })
   }
 
-  if (!schema) {
-    return (
-      <Pane title={t.structureTitle}>
-        <p className="structure__empty">{t.structureEmpty}</p>
-      </Pane>
-    )
+  function className(classId: string): string {
+    return edits.classes[classId]?.name?.trim() || byId.get(classId)!.name
   }
 
-  const fieldCount = schema.classes.reduce((total, item) => total + item.fields.length, 0)
+  function describe(type: TypeRef): string {
+    if (type.kind === 'primitive') return type.name
+    if (type.kind === 'class') return className(type.classId)
+    return type.itemsNullable ? `(${describe(type.items)} | null)[]` : `${describe(type.items)}[]`
+  }
 
-  function renderFields(classId: string, path: string) {
-    const fields = findClass(schema!, classId).fields
+  function editField(path: string, change: Partial<FieldEdit>) {
+    onEditsChange({ ...edits, fields: updateEdit(edits.fields, path, change) })
+  }
+
+  function renameClass(classId: string, name: string) {
+    onEditsChange({ ...edits, classes: updateEdit(edits.classes, classId, { name: name === '' ? undefined : name }) })
+  }
+
+  function renderFields(classId: string, ancestors: string[]) {
+    const fields = byId.get(classId)!.fields
     if (fields.length === 0) return <p className="structure__no-fields">{t.structureNoFields}</p>
-    return <ul className="structure__list">{fields.map((field) => renderField(field, `${path}/${field.key}`))}</ul>
+    return <ul className="structure__list">{fields.map((field) => renderField(classId, field, ancestors))}</ul>
   }
 
-  function renderField(field: Field, path: string) {
-    const nested = classOf(field.type)
-    const primitive = primitiveOf(field.type)
-    const open = !collapsed.has(path)
+  function renderField(classId: string, field: Field, ancestors: string[]) {
+    const path = fieldPath(classId, field.key)
+    // Tree position, unique even when a shared class appears in several places
+    const node = `${ancestors.join('>')}>${path}`
+    const edit = edits.fields[path]
+    const final = editedField(field, edit)
+    const excluded = edit?.excluded === true
+    const nested = classOf(final.type)
+    const inner = innermostType(final.type)
+    const open = !collapsed.has(node)
+    const warning = warnings.find((item) => item.classId === classId && item.key === field.key)
     return (
-      <li key={path} className="structure__item">
+      <li key={node} className={`structure__item${excluded ? ' structure__item--excluded' : ''}`}>
         <div className="structure__row">
-          {nested ? (
-            <button type="button" className="structure__toggle" aria-expanded={open} aria-label={open ? t.collapse : t.expand} onClick={() => toggle(path)}>
+          <input
+            type="checkbox"
+            className="structure__include"
+            checked={!excluded}
+            aria-label={t.includeField(field.key)}
+            onChange={(event) => editField(path, { excluded: event.target.checked ? undefined : true })}
+          />
+          {nested && !excluded ? (
+            <button type="button" className="structure__toggle" aria-expanded={open} aria-label={open ? t.collapse : t.expand} onClick={() => toggle(node)}>
               {open ? '▾' : '▸'}
             </button>
           ) : (
             <span className="structure__toggle" aria-hidden="true" />
           )}
           <span className="structure__key">{field.key}</span>
+          {final.name && <span className="structure__rename">→ {final.name}</span>}
           <span className="structure__colon">:</span>
-          <span className={`structure__type${nested ? ' structure__type--class' : ''}`}>{describeType(field.type, schema!)}</span>
-          {field.optional && <span className="structure__badge">{t.optional}</span>}
-          {field.nullable && <span className="structure__badge">{t.nullable}</span>}
-          {primitive === 'any' && (
-            <span className="structure__badge structure__badge--warning" title={t.anyHint}>
+          <span className={`structure__type${nested ? ' structure__type--class' : ''}${edit?.type ? ' structure__type--edited' : ''}`}>
+            {describe(final.type)}
+          </span>
+          {final.optional && <span className="structure__badge">{t.optional}</span>}
+          {final.nullable && <span className="structure__badge">{t.nullable}</span>}
+          {warning && !excluded && (
+            <span className="structure__badge structure__badge--warning" title={t.warningText(warning)}>
               {t.review}
             </span>
           )}
-          {primitive === 'null' && (
-            <span className="structure__badge structure__badge--warning" title={t.nullHint}>
-              {t.review}
-            </span>
-          )}
+          <button
+            type="button"
+            className="structure__edit"
+            aria-expanded={editing === node}
+            aria-label={t.editField(field.key)}
+            title={t.editField(field.key)}
+            onClick={() => setEditing(editing === node ? null : node)}
+          >
+            {t.edit}
+          </button>
         </div>
-        {nested && open && renderFields(nested, path)}
+        {editing === node && (
+          <div className="structure__editor">
+            <label>
+              <span>{t.propertyName}</span>
+              <input type="text" value={edit?.name ?? ''} placeholder={field.key} onChange={(event) => editField(path, { name: event.target.value || undefined })} />
+            </label>
+            <label>
+              <span>{t.fieldType}</span>
+              <select
+                value={edit?.type ?? ''}
+                onChange={(event) => editField(path, { type: (event.target.value || undefined) as PrimitiveType | undefined })}
+              >
+                <option value="">{t.detectedType(describe(innermostType(field.type)))}</option>
+                {TYPE_CHOICES.filter((choice) => !(inner.kind === 'primitive' && choice === inner.name && !edit?.type)).map((choice) => (
+                  <option key={choice} value={choice}>
+                    {choice === 'object' ? t.mapType : choice}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {nested && (
+              <label>
+                <span>{t.classNameLabel}</span>
+                <input
+                  type="text"
+                  value={edits.classes[nested]?.name ?? ''}
+                  placeholder={byId.get(nested)!.name}
+                  onChange={(event) => renameClass(nested, event.target.value)}
+                />
+              </label>
+            )}
+            <div className="structure__checks">
+              <label>
+                <input type="checkbox" checked={final.optional} onChange={(event) => editField(path, { optional: event.target.checked === field.optional ? undefined : event.target.checked })} />
+                {t.optional}
+              </label>
+              <label>
+                <input type="checkbox" checked={final.nullable} onChange={(event) => editField(path, { nullable: event.target.checked === field.nullable ? undefined : event.target.checked })} />
+                {t.nullable}
+              </label>
+            </div>
+          </div>
+        )}
+        {/* A class already open above is not expanded again (two fields of the same class inside each other) */}
+        {nested && open && !excluded && !ancestors.includes(nested) && renderFields(nested, [...ancestors, nested])}
       </li>
     )
   }
 
-  const rootClass = classOf(schema.root)
+  const rootClass = classOf(detected.root)
+  const fieldCount = detected.classes.reduce((total, item) => total + item.fields.length, 0)
 
   return (
-    <Pane title={t.structureTitle} footer={<p className="structure__summary">{t.structureSummary(schema.classes.length, fieldCount)}</p>}>
+    <Pane
+      title={t.structureTitle}
+      actions={
+        hasEdits(edits) && (
+          <button type="button" className="button button--small" onClick={() => onEditsChange({ classes: {}, fields: {} })}>
+            {t.resetEdits}
+          </button>
+        )
+      }
+      footer={<p className="structure__summary">{t.structureSummary(detected.classes.length, fieldCount)}</p>}
+    >
       <div className="structure">
+        {warnings.length > 0 && (
+          <details className="structure__warnings">
+            <summary>{t.warningCount(warnings.length)}</summary>
+            <ul>
+              {warnings.map((warning) => (
+                <li key={`${warning.classId}/${warning.key}`}>
+                  <code>
+                    {className(warning.classId)}.{warning.key}
+                  </code>
+                  : {t.warningText(warning)}
+                </li>
+              ))}
+            </ul>
+          </details>
+        )}
         <div className="structure__row structure__row--root">
-          <span className="structure__type structure__type--class">{describeType(schema.root, schema)}</span>
-          {schema.root.kind === 'array' && <span className="structure__badge">{t.rootArray}</span>}
+          {rootClass ? (
+            <input
+              type="text"
+              className="structure__root-name"
+              aria-label={t.rootName}
+              title={t.rootName}
+              value={edits.classes[rootClass]?.name ?? ''}
+              placeholder={byId.get(rootClass)!.name}
+              onChange={(event) => renameClass(rootClass, event.target.value)}
+            />
+          ) : (
+            <span className="structure__type">{describe(detected.root)}</span>
+          )}
+          {detected.root.kind === 'array' && <span className="structure__badge">{t.rootArray}</span>}
         </div>
-        {rootClass ? renderFields(rootClass, '') : <p className="structure__no-fields">{t.structureNoClasses}</p>}
+        {rootClass ? renderFields(rootClass, [rootClass]) : <p className="structure__no-fields">{t.structureNoClasses}</p>}
       </div>
     </Pane>
   )

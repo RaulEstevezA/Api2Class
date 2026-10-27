@@ -1,4 +1,5 @@
 import type { JsonErrorInfo, JsonExpected } from '../core/json.ts'
+import type { SchemaWarning } from '../core/warnings.ts'
 
 const EXPECTED_EN: Record<JsonExpected, string> = {
   value: 'a value',
@@ -56,8 +57,23 @@ const en = {
   optional: 'optional',
   nullable: 'nullable',
   review: 'review',
-  anyHint: 'Values of different types were found here, so the type is left open (any). Check it.',
-  nullHint: 'Only null was found here, so the real type cannot be known. Check it.',
+  warningCount: (n: number) => (n === 1 ? '1 field to review' : `${n} fields to review`),
+  warningText: (warning: SchemaWarning) =>
+    warning.code === 'mixedTypes'
+      ? `values of different types (${warning.counts!.map(([kind, count]) => `${kind} ×${count}`).join(', ')}), so it is left as any. Choose a type.`
+      : warning.code === 'emptyArray'
+        ? 'the array is always empty, so the type of its items is unknown. Choose a type.'
+        : 'it is always null, so its real type is unknown. Choose a type.',
+  edit: 'Edit',
+  editField: (key: string) => `Edit “${key}”`,
+  includeField: (key: string) => `Include “${key}” in the code`,
+  propertyName: 'Property name',
+  fieldType: 'Type',
+  detectedType: (type: string) => `${type} (detected)`,
+  mapType: 'object (generic map)',
+  classNameLabel: 'Class name',
+  rootName: 'Root model name',
+  resetEdits: 'Reset edits',
   expand: 'Expand',
   collapse: 'Collapse',
   outputTitle: 'Generated code',
@@ -135,8 +151,23 @@ const es: Messages = {
   optional: 'opcional',
   nullable: 'nullable',
   review: 'revisar',
-  anyHint: 'Aquí hay valores de tipos distintos, así que el tipo queda abierto (any). Revísalo.',
-  nullHint: 'Aquí solo aparece null, así que no se puede saber el tipo real. Revísalo.',
+  warningCount: (n: number) => (n === 1 ? '1 campo para revisar' : `${n} campos para revisar`),
+  warningText: (warning: SchemaWarning) =>
+    warning.code === 'mixedTypes'
+      ? `valores de tipos distintos (${warning.counts!.map(([kind, count]) => `${kind} ×${count}`).join(', ')}), así que queda como any. Elige un tipo.`
+      : warning.code === 'emptyArray'
+        ? 'el array siempre está vacío, así que no se sabe el tipo de sus elementos. Elige un tipo.'
+        : 'siempre es null, así que no se sabe su tipo real. Elige un tipo.',
+  edit: 'Editar',
+  editField: (key: string) => `Editar “${key}”`,
+  includeField: (key: string) => `Incluir “${key}” en el código`,
+  propertyName: 'Nombre de la propiedad',
+  fieldType: 'Tipo',
+  detectedType: (type: string) => `${type} (detectado)`,
+  mapType: 'object (mapa genérico)',
+  classNameLabel: 'Nombre de la clase',
+  rootName: 'Nombre del modelo raíz',
+  resetEdits: 'Restablecer',
   expand: 'Desplegar',
   collapse: 'Plegar',
   outputTitle: 'Código generado',
