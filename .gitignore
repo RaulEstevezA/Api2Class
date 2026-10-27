@@ -32,6 +32,11 @@ GEMINI.md
 .zed/
 
 # ==============================
+# Datos locales de prueba (nunca subir respuestas reales de APIs)
+# ==============================
+**/local-data/
+
+# ==============================
 # Node / React / TypeScript
 # ==============================
 node_modules/
@@ -49,6 +54,8 @@ build/
 out/
 .next/
 .vite/
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
 .turbo/
 storybook-static/
 
@@ -100,6 +107,9 @@ wheels/
 pip-wheel-metadata/
 sdist/
 develop-eggs/
+
+# PyInstaller
+*.manifest
 
 # Tests / tipos / linters
 .pytest_cache/
