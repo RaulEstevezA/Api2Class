@@ -1,5 +1,7 @@
 import { LanguageSwitcher } from './LanguageSwitcher.tsx'
-import { ThemeSwitcher } from './ThemeSwitcher.tsx'
+// Light, dark and system themes are ready but turned off: the portfolio and DataCleanr only have the
+// dark one. To turn them on, uncomment this import, <ThemeSwitcher /> below and the script in index.html.
+// import { ThemeSwitcher } from './ThemeSwitcher.tsx'
 import './AppHeader.css'
 
 /** Same navigation bar as the portfolio, so moving between the website and the tool feels seamless. */
@@ -12,7 +14,7 @@ export function AppHeader({ wide }: { wide: boolean }) {
           Raúl Estévez
         </a>
         <div className="app-header__controls">
-          <ThemeSwitcher />
+          {/* <ThemeSwitcher /> */}
           <LanguageSwitcher />
         </div>
       </nav>
