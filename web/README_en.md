@@ -58,7 +58,7 @@ src/
   utils/                Downloads, .zip writer, syntax highlighting loader and the example JSON
 ```
 
-`core/` does not depend on React: it is the part tested with the shared cases, and it will have its counterpart in the desktop version.
+`core/` does not depend on React: it is the part tested with the shared cases, and it has its counterpart in `desktop/api2class/core/`.
 
 ## Adding a language
 

@@ -58,7 +58,7 @@ src/
   utils/                Descargas, creación de .zip, carga del resaltado de sintaxis y el JSON de ejemplo
 ```
 
-`core/` no depende de React: es la parte que se prueba con los casos compartidos y la que tendrá su equivalente en la versión de escritorio.
+`core/` no depende de React: es la parte que se prueba con los casos compartidos y la que tiene su equivalente en `desktop/api2class/core/`.
 
 ## Añadir un lenguaje
 

@@ -107,12 +107,12 @@ Tres paneles (JSON, estructura, código) que pasan a ser pestañas en pantallas 
 |---|---|---|
 | Tecnología | React + TypeScript + Vite | Python + PySide6 |
 | Dónde se ejecuta | En el navegador | Aplicación instalable (Windows, macOS, Linux) |
-| Estado | Publicada: [raulesteveza.github.io/tools/Api2Class](https://raulesteveza.github.io/tools/Api2Class/) | Prevista |
-| Documentación | [web/README_es.md](./web/README_es.md) | |
+| Estado | Publicada: [raulesteveza.github.io/tools/Api2Class](https://raulesteveza.github.io/tools/Api2Class/) | [Descargar](./desktop/README_es.md#descargar) (compilada y comprobada en macOS) |
+| Documentación | [web/README_es.md](./web/README_es.md) | [desktop/README_es.md](./desktop/README_es.md) |
 
 ## Comportamiento compartido
 
-Las dos versiones se escribirán por separado (TypeScript y Python), pero **tienen que comportarse igual**: la carpeta [`shared/`](./shared/README.md) contiene los casos de prueba que definen qué debe hacer cada parte, desde la validación del JSON y el análisis hasta las ediciones y el código exacto que se genera en cada lenguaje y estilo. Los tests de la web ya los leen; los del escritorio leerán los mismos archivos.
+Las dos versiones se escriben por separado (TypeScript y Python), pero **se comportan igual**: la carpeta [`shared/`](./shared/README.md) contiene los casos de prueba que definen qué debe hacer cada parte, desde la validación del JSON y el análisis hasta las ediciones y el código exacto que se genera en cada lenguaje y estilo. Los tests de la web y los del escritorio leen los mismos archivos, y los generadores del escritorio se han comparado además con la salida de la web para todas las opciones: idénticos.
 
 El código esperado se comprueba con las herramientas reales: Python (con Pydantic), Java (con Jackson, Gson y Lombok), Dart, Swift, PHP y Rust (con serde) leen cada JSON de ejemplo y lo vuelven a escribir sin cambios, TypeScript pasa `tsc --strict`, Zod acepta cada entrada y los JSON Schema la validan. C#, Kotlin, Go y Scala siguen el comportamiento documentado de cada lenguaje, pero todavía no se han compilado.
 
@@ -123,6 +123,9 @@ web/                     Versión web (React + TypeScript + Vite)
   src/core/              Lógica sin interfaz: parser JSON, análisis, modelo, ediciones, nombres, avisos
   src/core/generators/   Una carpeta por lenguaje
   src/components/        Interfaz React
+desktop/                 Versión de escritorio (Python + PySide6)
+  api2class/core/        La misma lógica que web/src/core/, en Python
+  api2class/ui/          Interfaz con PySide6
 shared/                  Comportamiento común a ambas versiones
   test-cases/            Casos de prueba en JSON y código generado esperado
 docs/                    Imágenes

@@ -22,9 +22,9 @@ It is not just a JSON → code converter: between the JSON and the code there is
 The repository contains two versions of the same tool:
 
 - **[Web](./web/README_en.md)**: React + TypeScript + Vite. Everything runs in the browser. Available at [raulesteveza.github.io/tools/Api2Class](https://raulesteveza.github.io/tools/Api2Class/).
-- **Desktop**: Python + PySide6. Planned.
+- **[Desktop](./desktop/README_en.md)**: Python + PySide6. Installable app for Windows, macOS and Linux, with the same features and exactly the same generated code.
 
-Both versions will share their expected behavior through language-neutral test cases in [`shared/`](./shared/README.md).
+Both versions share their expected behavior through language-neutral test cases in [`shared/`](./shared/README.md).
 
 ## Suggestions
 

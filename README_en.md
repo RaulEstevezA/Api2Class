@@ -107,12 +107,12 @@ Three panes (JSON, structure, code) that become tabs on narrow screens, dark, li
 |---|---|---|
 | Technology | React + TypeScript + Vite | Python + PySide6 |
 | Runs in | The browser | Installable application (Windows, macOS, Linux) |
-| Status | Published: [raulesteveza.github.io/tools/Api2Class](https://raulesteveza.github.io/tools/Api2Class/) | Planned |
-| Documentation | [web/README_en.md](./web/README_en.md) | |
+| Status | Published: [raulesteveza.github.io/tools/Api2Class](https://raulesteveza.github.io/tools/Api2Class/) | [Download](./desktop/README_en.md#download) (built and checked on macOS) |
+| Documentation | [web/README_en.md](./web/README_en.md) | [desktop/README_en.md](./desktop/README_en.md) |
 
 ## Shared behavior
 
-The two versions will be written separately (TypeScript and Python), but **they must behave the same**: the [`shared/`](./shared/README.md) folder contains the test cases that define what each part must do, from JSON validation and analysis to edits and the exact code generated for each language and style. The web tests already read them; the desktop tests will read the same files.
+The two versions are written separately (TypeScript and Python), but **they behave the same**: the [`shared/`](./shared/README.md) folder contains the test cases that define what each part must do, from JSON validation and analysis to edits and the exact code generated for each language and style. The web and desktop tests read the same files, and the desktop generators were also compared with the web's output for every option: identical.
 
 The expected code is checked with the real tools: Python (with Pydantic), Java (with Jackson, Gson and Lombok), Dart, Swift, PHP and Rust (with serde) read each sample JSON and write it back unchanged, TypeScript passes `tsc --strict`, Zod accepts each input and the JSON Schemas validate it. C#, Kotlin, Go and Scala follow each language's documented behavior but have not been compiled yet.
 
@@ -123,6 +123,9 @@ web/                     Web version (React + TypeScript + Vite)
   src/core/              Logic without UI: JSON parser, analysis, model, edits, names, warnings
   src/core/generators/   One folder per language
   src/components/        React interface
+desktop/                 Desktop version (Python + PySide6)
+  api2class/core/        Same logic as web/src/core/, in Python
+  api2class/ui/          PySide6 interface
 shared/                  Behavior common to both versions
   test-cases/            JSON test cases and expected generated code
 docs/                    Images
