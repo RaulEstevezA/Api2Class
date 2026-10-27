@@ -1,4 +1,5 @@
 import { LanguageSwitcher } from './LanguageSwitcher.tsx'
+import { ThemeSwitcher } from './ThemeSwitcher.tsx'
 import './AppHeader.css'
 
 /** Same navigation bar as the portfolio, so moving between the website and the tool feels seamless. */
@@ -10,7 +11,10 @@ export function AppHeader({ wide }: { wide: boolean }) {
         <a href="https://raulesteveza.github.io/" className="app-header__logo">
           Raúl Estévez
         </a>
-        <LanguageSwitcher />
+        <div className="app-header__controls">
+          <ThemeSwitcher />
+          <LanguageSwitcher />
+        </div>
       </nav>
     </header>
   )

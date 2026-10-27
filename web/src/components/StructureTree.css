@@ -40,7 +40,7 @@
 }
 
 .structure__row:hover {
-  background: rgba(110, 118, 129, 0.1);
+  background: var(--hover);
 }
 
 .structure__row--root {
@@ -63,7 +63,7 @@ span.structure__toggle {
 }
 
 .structure__key {
-  color: #7ee787;
+  color: var(--syntax-property);
 }
 
 .structure__colon {
@@ -72,11 +72,11 @@ span.structure__toggle {
 }
 
 .structure__type {
-  color: #79c0ff;
+  color: var(--syntax-constant);
 }
 
 .structure__type--class {
-  color: #ffa657;
+  color: var(--syntax-type);
 }
 
 .structure__badge {
@@ -210,13 +210,13 @@ span.structure__toggle {
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--page-bg);
-  color: #ffa657;
+  color: var(--syntax-type);
   font: inherit;
   font-weight: 600;
 }
 
 .structure__root-name::placeholder {
-  color: #ffa657;
+  color: var(--syntax-type);
   opacity: 1;
 }
 

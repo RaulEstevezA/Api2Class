@@ -6,35 +6,32 @@ import { tags } from '@lezer/highlight'
 import { useEffect, useRef } from 'react'
 import './CodeEditor.css'
 
-// Same colors as GitHub's dark theme, which the portfolio palette comes from
+// GitHub's syntax colors, from the tokens in index.css so they follow the theme
 const highlight = HighlightStyle.define([
-  { tag: [tags.keyword, tags.modifier, tags.operatorKeyword, tags.definitionKeyword], color: '#ff7b72' },
-  { tag: [tags.string, tags.special(tags.string)], color: '#a5d6ff' },
-  { tag: [tags.number, tags.bool, tags.null, tags.atom], color: '#79c0ff' },
-  { tag: [tags.propertyName], color: '#7ee787' },
-  { tag: [tags.typeName, tags.className, tags.namespace], color: '#ffa657' },
-  { tag: [tags.function(tags.variableName), tags.function(tags.propertyName)], color: '#d2a8ff' },
-  { tag: [tags.meta, tags.annotation], color: '#d2a8ff' },
-  { tag: [tags.comment, tags.lineComment, tags.blockComment], color: '#8b949e', fontStyle: 'italic' },
+  { tag: [tags.keyword, tags.modifier, tags.operatorKeyword, tags.definitionKeyword], color: 'var(--syntax-keyword)' },
+  { tag: [tags.string, tags.special(tags.string)], color: 'var(--syntax-string)' },
+  { tag: [tags.number, tags.bool, tags.null, tags.atom], color: 'var(--syntax-constant)' },
+  { tag: [tags.propertyName], color: 'var(--syntax-property)' },
+  { tag: [tags.typeName, tags.className, tags.namespace], color: 'var(--syntax-type)' },
+  { tag: [tags.function(tags.variableName), tags.function(tags.propertyName)], color: 'var(--syntax-function)' },
+  { tag: [tags.meta, tags.annotation], color: 'var(--syntax-function)' },
+  { tag: [tags.comment, tags.lineComment, tags.blockComment], color: 'var(--syntax-comment)', fontStyle: 'italic' },
 ])
 
-const theme = EditorView.theme(
-  {
+const theme = EditorView.theme({
     '&': { height: '100%', backgroundColor: 'var(--page-bg)', color: 'var(--text)', fontSize: '13px' },
     '.cm-scroller': { fontFamily: 'var(--mono)', lineHeight: '1.6' },
     '.cm-content': { caretColor: 'var(--accent)' },
     '.cm-gutters': { backgroundColor: 'var(--page-bg)', color: 'var(--muted)', border: 'none' },
-    '.cm-activeLine': { backgroundColor: 'rgba(110, 118, 129, 0.1)' },
+    '.cm-activeLine': { backgroundColor: 'var(--hover)' },
     '&.cm-focused .cm-cursor': { borderLeftColor: 'var(--accent)' },
     '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, ::selection': {
-      backgroundColor: 'rgba(56, 139, 253, 0.35)',
+      backgroundColor: 'var(--selection)',
     },
-    '.cm-matchingBracket': { backgroundColor: 'rgba(63, 185, 80, 0.25)', outline: 'none' },
+    '.cm-matchingBracket': { backgroundColor: 'var(--bracket)', outline: 'none' },
     '.cm-placeholder': { color: 'var(--muted)' },
-    '.cm-errorLine': { backgroundColor: 'rgba(248, 81, 73, 0.15)' },
-  },
-  { dark: true },
-)
+    '.cm-errorLine': { backgroundColor: 'var(--error-line)' },
+})
 
 function errorLineDecoration(line: number | null) {
   return EditorView.decorations.compute(['doc'], (state) => {

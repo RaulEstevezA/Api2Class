@@ -20,7 +20,7 @@
   justify-content: center;
   border: 2px dashed var(--accent);
   border-radius: var(--radius);
-  background: rgba(13, 17, 23, 0.85);
+  background: var(--overlay);
   color: var(--accent-text);
   font-weight: 500;
   pointer-events: none;

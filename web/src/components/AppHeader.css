@@ -15,6 +15,13 @@
   justify-content: space-between;
 }
 
+.app-header__controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 16px;
+}
+
 .app-header__logo {
   color: var(--text);
   font-weight: 600;
