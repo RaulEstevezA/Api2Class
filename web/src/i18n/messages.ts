@@ -78,7 +78,9 @@ const en = {
           ? 'the object is always empty, so it is left as a generic map. Choose a type if it has fields.'
           : 'it is always null, so its real type is unknown. Choose a type.',
   edit: 'Edit',
+  close: 'Close',
   editField: (key: string) => `Edit “${key}”`,
+  closeEditor: (key: string) => `Close the editor of “${key}”`,
   includeField: (key: string) => `Include “${key}” in the code`,
   fieldIncluded: 'Included in the code: uncheck to leave it out',
   fieldExcluded: 'Left out of the code: check to include it',
@@ -200,7 +202,9 @@ const es: Messages = {
           ? 'el objeto siempre está vacío, así que queda como mapa genérico. Elige un tipo si tiene campos.'
           : 'siempre es null, así que no se sabe su tipo real. Elige un tipo.',
   edit: 'Editar',
+  close: 'Cerrar',
   editField: (key: string) => `Editar “${key}”`,
+  closeEditor: (key: string) => `Cerrar el editor de “${key}”`,
   includeField: (key: string) => `Incluir “${key}” en el código`,
   fieldIncluded: 'Incluido en el código: desmárcalo para quitarlo',
   fieldExcluded: 'Fuera del código: márcalo para incluirlo',

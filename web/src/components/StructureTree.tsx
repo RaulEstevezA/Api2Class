@@ -126,11 +126,11 @@ export function StructureTree({ schema, edits, onEditsChange, warnings, analysis
             type="button"
             className="structure__edit"
             aria-expanded={editing === node}
-            aria-label={t.editField(field.key)}
-            title={t.editField(field.key)}
+            aria-label={editing === node ? t.closeEditor(field.key) : t.editField(field.key)}
+            title={editing === node ? t.closeEditor(field.key) : t.editField(field.key)}
             onClick={() => setEditing(editing === node ? null : node)}
           >
-            {t.edit}
+            {editing === node ? t.close : t.edit}
           </button>
         </div>
         {editing === node && (
