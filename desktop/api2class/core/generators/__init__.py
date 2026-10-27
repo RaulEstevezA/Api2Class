@@ -5,12 +5,13 @@ from .dart import DART
 from .go import GO
 from .java import JAVA
 from .kotlin import KOTLIN
+from .php import PHP
 from .python import PYTHON
 from .swift import SWIFT
 from .types import Generator
 from .typescript import TYPESCRIPT
 
-GENERATORS: list[Generator] = [PYTHON, JAVA, TYPESCRIPT, CSHARP, KOTLIN, DART, SWIFT, GO]
+GENERATORS: list[Generator] = [PYTHON, JAVA, TYPESCRIPT, CSHARP, KOTLIN, DART, SWIFT, GO, PHP]
 
 
 def find_generator(generator_id: str) -> Generator:
