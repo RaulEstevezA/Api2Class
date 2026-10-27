@@ -1,7 +1,7 @@
-"""Main window: header with the language switcher, the intro card and the three panels."""
+"""Main window: header with the language switcher, the intro card and the three panels. Unlike the web
+version, it has no links: the app works on its own, without going online."""
 
-from PySide6.QtCore import Qt, QUrl
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QButtonGroup,
     QFrame,
@@ -19,10 +19,6 @@ from .i18n import MESSAGES, I18n
 from .json_panel import JsonPanel
 from .session import Session
 from .structure_panel import StructurePanel
-
-WEB_URL = "https://raulesteveza.github.io/tools/Api2Class/"
-SOURCE_URL = "https://github.com/RaulEstevezA/Api2Class"
-TOOLS_URL = "https://raulesteveza.github.io/tools/"
 
 
 class LanguageSwitcher(QWidget):
@@ -94,15 +90,6 @@ class MainWindow(QMainWindow):
         for label in (self.tagline, self.description, self.privacy):
             text.addWidget(label)
         intro_layout.addLayout(text, 1)
-        links = QVBoxLayout()
-        links.addStretch()
-        self._links = {}
-        for key, url in (("web_version", WEB_URL), ("source_code", SOURCE_URL), ("all_tools", TOOLS_URL)):
-            button = QPushButton()
-            button.clicked.connect(lambda _=False, url=url: QDesktopServices.openUrl(QUrl(url)))
-            links.addWidget(button)
-            self._links[key] = button
-        intro_layout.addLayout(links)
         page.addWidget(intro)
 
         self.json_panel = JsonPanel(i18n, session)
@@ -125,5 +112,3 @@ class MainWindow(QMainWindow):
         self.tagline.setText(t.tagline)
         self.description.setText(t.intro_description)
         self.privacy.setText(t.privacy_note)
-        for key, button in self._links.items():
-            button.setText(getattr(t, key))
