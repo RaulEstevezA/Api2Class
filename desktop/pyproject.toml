@@ -14,8 +14,8 @@ dependencies = ["PySide6>=6.10"]
 
 [project.optional-dependencies]
 dev = ["pytest>=9.1", "ruff>=0.17"]
-# Packaging the app (packaging/api2class.spec)
-build = ["pyinstaller>=6.22"]
+# Packaging the app (packaging/api2class.spec); Pillow only regenerates the icons
+build = ["pyinstaller>=6.22", "pillow>=11.0"]
 
 [project.scripts]
 api2class = "api2class.__main__:main"
