@@ -1,0 +1,128 @@
+{
+  "valid": [
+    {
+      "description": "object with every kind of value",
+      "input": "{\"id\": 15, \"name\": \"Raul\", \"active\": true, \"deleted\": false, \"note\": null}",
+      "expected": { "id": "integer:15", "name": "Raul", "active": true, "deleted": false, "note": null }
+    },
+    {
+      "description": "29.0 is a float, not an integer",
+      "input": "{\"a\": 29.0, \"b\": 29, \"c\": -0.5, \"d\": 1e3, \"e\": 2E-2, \"f\": -7}",
+      "expected": { "a": "float:29.0", "b": "integer:29", "c": "float:-0.5", "d": "float:1e3", "e": "float:2E-2", "f": "integer:-7" }
+    },
+    {
+      "description": "numbers bigger than JavaScript can represent keep their text",
+      "input": "[12345678901234567890, 0.1000000000000000055511151231257827]",
+      "expected": ["integer:12345678901234567890", "float:0.1000000000000000055511151231257827"]
+    },
+    {
+      "description": "nested objects and arrays",
+      "input": "{\"address\": {\"city\": \"Vinaros\"}, \"orders\": [{\"id\": 101}], \"tags\": []}",
+      "expected": { "address": { "city": "Vinaros" }, "orders": [{ "id": "integer:101" }], "tags": [] }
+    },
+    {
+      "description": "string escapes",
+      "input": "[\"a\\\"b\", \"\\\\\", \"\\/\", \"\\n\\t\", \"\\u00e9\", \"\\ud83d\\ude00\"]",
+      "expected": ["a\"b", "\\", "/", "\n\t", "é", "😀"]
+    },
+    {
+      "description": "a top-level array",
+      "input": "[{\"id\": 1}, {\"id\": 2}]",
+      "expected": [{ "id": "integer:1" }, { "id": "integer:2" }]
+    },
+    {
+      "description": "a top-level primitive",
+      "input": "\"hello\"",
+      "expected": "hello"
+    },
+    {
+      "description": "surrounding whitespace and a byte order mark are ignored",
+      "input": "\ufeff\n  {\"a\": 1}\n\n",
+      "expected": { "a": "integer:1" }
+    }
+  ],
+  "invalid": [
+    { "description": "empty text", "input": "", "expected": { "code": "empty", "line": 1, "column": 1 } },
+    { "description": "only whitespace", "input": "  \n  ", "expected": { "code": "empty", "line": 2, "column": 3 } },
+    {
+      "description": "object not closed",
+      "input": "{\"id\": 1",
+      "expected": { "code": "unexpectedEnd", "line": 1, "column": 9 }
+    },
+    {
+      "description": "string not closed",
+      "input": "{\"name\": \"Raul",
+      "expected": { "code": "unexpectedEnd", "line": 1, "column": 15 }
+    },
+    {
+      "description": "trailing comma in an object",
+      "input": "{\n  \"id\": 1,\n}",
+      "expected": { "code": "trailingComma", "line": 3, "column": 1, "found": "}" }
+    },
+    {
+      "description": "trailing comma in an array",
+      "input": "[1, 2,]",
+      "expected": { "code": "trailingComma", "line": 1, "column": 7, "found": "]" }
+    },
+    {
+      "description": "single quotes",
+      "input": "{'id': 1}",
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 2, "found": "'" }
+    },
+    {
+      "description": "unquoted key",
+      "input": "{id: 1}",
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 2, "found": "i" }
+    },
+    {
+      "description": "missing comma between values",
+      "input": "{\n  \"a\": 1\n  \"b\": 2\n}",
+      "expected": { "code": "unexpectedCharacter", "line": 3, "column": 3, "found": "\"" }
+    },
+    {
+      "description": "missing colon",
+      "input": "{\"a\" 1}",
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 6, "found": "1" }
+    },
+    {
+      "description": "comment",
+      "input": "{\"a\": 1 // id\n}",
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 9, "found": "/" }
+    },
+    {
+      "description": "Python and JavaScript literals",
+      "input": "{\"a\": None}",
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 7, "found": "N" }
+    },
+    {
+      "description": "leading zero",
+      "input": "{\"zip\": 012500}",
+      "expected": { "code": "invalidNumber", "line": 1, "column": 10, "found": "1" }
+    },
+    {
+      "description": "number with a trailing dot",
+      "input": "[1.]",
+      "expected": { "code": "invalidNumber", "line": 1, "column": 3, "found": "." }
+    },
+    {
+      "description": "unknown escape",
+      "input": "[\"a\\x41\"]",
+      "expected": { "code": "invalidEscape", "line": 1, "column": 5, "found": "x" }
+    },
+    {
+      "description": "line break inside a string",
+      "input": "[\"a\nb\"]",
+      "expected": { "code": "controlCharacter", "line": 1, "column": 4, "found": "\n" }
+    },
+    {
+      "description": "two values",
+      "input": "{\"a\": 1} {\"b\": 2}",
+      "expected": { "code": "trailingContent", "line": 1, "column": 10, "found": "{" }
+    },
+    {
+      "description": "columns count characters, not bytes or UTF-16 units",
+      "input": "{\"emoji\": \"😀\", \"name\": \"Estévez\" x}",
+      "expected": { "code": "unexpectedCharacter", "line": 1, "column": 34, "found": "x" }
+    }
+  ]
+}
