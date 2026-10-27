@@ -51,7 +51,7 @@ describe.each(generators)('$label', (generator) => {
 
   it('names the file after the root class', () => {
     const [file] = generator.generate(schema, DEFAULT_SETTINGS).files
-    expect(file.name.replace(/\.\w+$/, '').replace(/[_-]/g, '').toLowerCase()).toBe('userprofile')
+    expect(file.name.replace(/\..*$/, '').replace(/[_-]/g, '').toLowerCase()).toBe('userprofile')
   })
 
   it.runIf(generator.supportsMultipleFiles)('can write one file per class', () => {
