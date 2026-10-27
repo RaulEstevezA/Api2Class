@@ -3,8 +3,9 @@
 from .java import JAVA
 from .python import PYTHON
 from .types import Generator
+from .typescript import TYPESCRIPT
 
-GENERATORS: list[Generator] = [PYTHON, JAVA]
+GENERATORS: list[Generator] = [PYTHON, JAVA, TYPESCRIPT]
 
 
 def find_generator(generator_id: str) -> Generator:
