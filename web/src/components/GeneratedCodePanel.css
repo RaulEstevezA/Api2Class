@@ -134,3 +134,8 @@
   display: flex;
   gap: 6px;
 }
+
+.generated__error {
+  flex-basis: 100%;
+  color: var(--danger);
+}

@@ -115,6 +115,9 @@ const en = {
   copy: 'Copy',
   copied: 'Copied',
   download: 'Download',
+  openInMapper: 'Open in Mapper',
+  openInMapperTitle: 'Relate these classes to another model and generate the mapping code',
+  openInMapperError: 'The browser could not pass the classes to Mapper. Copy or download them and open them there.',
   errorPosition: (line: number, column: number) => `Line ${line}, column ${column}`,
   jsonEmpty: 'Paste a JSON response to start.',
   jsonError: (error: JsonErrorInfo) => {
@@ -239,6 +242,9 @@ const es: Messages = {
   copy: 'Copiar',
   copied: 'Copiado',
   download: 'Descargar',
+  openInMapper: 'Abrir en Mapper',
+  openInMapperTitle: 'Relaciona estas clases con otro modelo y genera el código de mapping',
+  openInMapperError: 'El navegador no ha podido pasar las clases a Mapper. Cópialas o descárgalas y ábrelas allí.',
   errorPosition: (line: number, column: number) => `Línea ${line}, columna ${column}`,
   jsonEmpty: 'Pega una respuesta JSON para empezar.',
   jsonError: (error: JsonErrorInfo) => {

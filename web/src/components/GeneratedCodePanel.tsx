@@ -1,6 +1,8 @@
 import type { LanguageSupport } from '@codemirror/language'
 import { useEffect, useState } from 'react'
 import { generators } from '../core/generators/index.ts'
+import { createMapperHandoff, openInMapper } from '../core/handoff.ts'
+import type { Schema } from '../core/schema.ts'
 import { optionValue, type GeneratedCode, type GenerateSettings, type Generator, type PropertyNaming } from '../core/generators/types.ts'
 import { useI18n } from '../i18n/useI18n.ts'
 import { editorLanguage } from '../utils/editorLanguages.ts'
@@ -20,11 +22,14 @@ interface GeneratedCodePanelProps {
   output: GeneratedCode | null
   /** Base name for the .zip with every file */
   rootName: string
+  /** The schema the code comes from, sent to Mapper with the code */
+  schema: Schema | null
 }
 
-export function GeneratedCodePanel({ generator, settings, onGeneratorChange, onSettingsChange, output, rootName }: GeneratedCodePanelProps) {
+export function GeneratedCodePanel({ generator, settings, onGeneratorChange, onSettingsChange, output, rootName, schema }: GeneratedCodePanelProps) {
   const { t } = useI18n()
   const [copied, setCopied] = useState(false)
+  const [mapperError, setMapperError] = useState(false)
   const [selectedFile, setSelectedFile] = useState(0)
   const [language, setLanguage] = useState<LanguageSupport | null>(null)
   const style = optionValue(generator, settings, 'style')
@@ -94,6 +99,17 @@ export function GeneratedCodePanel({ generator, settings, onGeneratorChange, onS
             )}
           </span>
           <div className="generated__actions">
+            <button
+              type="button"
+              className="button"
+              title={t.openInMapperTitle}
+              disabled={!schema || !output || files.length === 0}
+              onClick={() => {
+                if (schema && output) setMapperError(!openInMapper(createMapperHandoff(schema, output, generator.id)))
+              }}
+            >
+              {t.openInMapper}
+            </button>
             <button type="button" className="button" onClick={copy} disabled={!file}>
               {copied ? t.copied : t.copy}
             </button>
@@ -101,6 +117,11 @@ export function GeneratedCodePanel({ generator, settings, onGeneratorChange, onS
               {files.length > 1 ? t.downloadZip(files.length) : t.download}
             </button>
           </div>
+          {mapperError && (
+            <p className="generated__error" role="alert">
+              {t.openInMapperError}
+            </p>
+          )}
         </div>
       }
     >

@@ -92,6 +92,7 @@ function App() {
             }}
             output={output}
             rootName={schema?.classes[0]?.name ?? ''}
+            schema={schema}
           />
         </div>
         <LinksPanel />
