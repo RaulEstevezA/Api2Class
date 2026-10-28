@@ -95,7 +95,7 @@ Los nombres de las propiedades siguen la convención de cada lenguaje, o la que 
 | **JSON Schema** | draft 2020-12 |
 | **Smithy** | IDL 2.0 |
 
-Cada lenguaje incluye un ejemplo de uso. El código se puede copiar, descargar como archivo o, con un archivo por clase, como `.zip`.
+Cada lenguaje incluye un ejemplo de uso. El código se puede copiar, descargar como archivo o, con un archivo por clase, como `.zip`. En la versión web, **Abrir en Mapper** lleva las clases a [Mapper](https://github.com/RaulEstevezA/Mapper), para relacionarlas con los modelos de tu aplicación y generar el código de mapping.
 
 ### Interfaz
 

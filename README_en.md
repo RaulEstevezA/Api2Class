@@ -95,7 +95,7 @@ Property names follow each language's convention, or the one you choose: camelCa
 | **JSON Schema** | draft 2020-12 |
 | **Smithy** | IDL 2.0 |
 
-Every language comes with a usage example. The code can be copied, downloaded as a file or, with one file per class, as a `.zip`.
+Every language comes with a usage example. The code can be copied, downloaded as a file or, with one file per class, as a `.zip`. In the web version, **Open in Mapper** takes the classes to [Mapper](https://github.com/RaulEstevezA/Mapper), to relate them to the models of your application and generate the mapping code.
 
 ### Interface
 
