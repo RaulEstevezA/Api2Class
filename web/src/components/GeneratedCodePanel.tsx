@@ -1,7 +1,7 @@
 import type { LanguageSupport } from '@codemirror/language'
 import { useEffect, useState } from 'react'
 import { generators } from '../core/generators/index.ts'
-import { createMapperHandoff, openInMapper } from '../core/handoff.ts'
+// import { createMapperHandoff, openInMapper } from '../core/handoff.ts'
 import type { Schema } from '../core/schema.ts'
 import { optionValue, type GeneratedCode, type GenerateSettings, type Generator, type PropertyNaming } from '../core/generators/types.ts'
 import { useI18n } from '../i18n/useI18n.ts'
@@ -26,10 +26,10 @@ interface GeneratedCodePanelProps {
   schema: Schema | null
 }
 
-export function GeneratedCodePanel({ generator, settings, onGeneratorChange, onSettingsChange, output, rootName, schema }: GeneratedCodePanelProps) {
+export function GeneratedCodePanel({ generator, settings, onGeneratorChange, onSettingsChange, output, rootName }: GeneratedCodePanelProps) {
   const { t } = useI18n()
   const [copied, setCopied] = useState(false)
-  const [mapperError, setMapperError] = useState(false)
+  // const [mapperError, setMapperError] = useState(false)
   const [selectedFile, setSelectedFile] = useState(0)
   const [language, setLanguage] = useState<LanguageSupport | null>(null)
   const style = optionValue(generator, settings, 'style')
@@ -99,6 +99,7 @@ export function GeneratedCodePanel({ generator, settings, onGeneratorChange, onS
             )}
           </span>
           <div className="generated__actions">
+            {/* Mapper estará disponible cuando la integración haya superado más pruebas.
             <button
               type="button"
               className="button"
@@ -110,6 +111,7 @@ export function GeneratedCodePanel({ generator, settings, onGeneratorChange, onS
             >
               {t.openInMapper}
             </button>
+            */}
             <button type="button" className="button" onClick={copy} disabled={!file}>
               {copied ? t.copied : t.copy}
             </button>
@@ -117,11 +119,11 @@ export function GeneratedCodePanel({ generator, settings, onGeneratorChange, onS
               {files.length > 1 ? t.downloadZip(files.length) : t.download}
             </button>
           </div>
-          {mapperError && (
+          {/* {mapperError && (
             <p className="generated__error" role="alert">
               {t.openInMapperError}
             </p>
-          )}
+          )} */}
         </div>
       }
     >
