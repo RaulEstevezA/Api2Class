@@ -8,6 +8,7 @@ Notable changes to Api2Class, the web and the desktop version together. The form
 
 - Web: privacy-first traffic and page-view measurement with Cloudflare Web Analytics.
 - Web: the interface opens in the language chosen on the portfolio.
+- Web: opens a JSON response sent from [Api2Data](https://github.com/RaulEstevezA/Api2Data) (its **Open in Api2Class** action) in the input, with a line saying where it came from. The response is passed inside the browser and validated like pasted JSON; nothing goes through a server.
 - Web: **Open in Mapper** sends the generated classes to [Mapper](https://github.com/RaulEstevezA/Mapper). The button is hidden for now, until the integration has been tested further.
 
 ## [0.1.1] - 2026-10-27

@@ -8,6 +8,7 @@ import { JsonInputPanel } from './components/JsonInputPanel.tsx'
 import { LinksPanel } from './components/LinksPanel.tsx'
 import { StructureTree } from './components/StructureTree.tsx'
 import { analyze, type AnalyzeOptions } from './core/analyze.ts'
+import type { Incoming } from './core/incoming.ts'
 import { applyEdits, NO_EDITS, type Edits } from './core/edits.ts'
 import { findGenerator } from './core/generators/index.ts'
 import type { GenerateSettings, PropertyNaming } from './core/generators/types.ts'
@@ -21,10 +22,12 @@ const TABS: WorkspaceTab[] = ['input', 'structure', 'output']
 
 type AnalysisSettings = Required<Pick<AnalyzeOptions, 'detectFormats' | 'mergeIdentical'>>
 
-function App() {
+function App({ incoming = null }: { incoming?: Incoming | null }) {
   const { t } = useI18n()
   // Kept only in memory: pasted API responses may contain personal data or tokens
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState(incoming?.content ?? '')
+  // Where the input came from (Api2Data), said until the user changes it
+  const [received, setReceived] = useState(incoming)
   // Changes to the detected model; also only in memory, since they name the user's data
   const [edits, setEdits] = useState<Edits>(NO_EDITS)
   // Only preferences are remembered
@@ -68,10 +71,12 @@ function App() {
             value={input}
             onChange={(text) => {
               setInput(text)
+              setReceived(null)
               // Starting over: edits of the previous JSON would only get in the way
               if (text.trim() === '') setEdits(NO_EDITS)
             }}
             result={parsed}
+            received={received}
           />
           <StructureTree
             schema={detected}

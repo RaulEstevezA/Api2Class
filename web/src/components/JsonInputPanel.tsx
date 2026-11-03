@@ -1,6 +1,7 @@
 import type { LanguageSupport } from '@codemirror/language'
 import { useEffect, useRef, useState, type DragEvent } from 'react'
 import { formatJson, minifyJson } from '../core/format.ts'
+import type { Incoming } from '../core/incoming.ts'
 import type { ParseResult } from '../core/json.ts'
 import { useI18n } from '../i18n/useI18n.ts'
 import { editorLanguage } from '../utils/editorLanguages.ts'
@@ -16,9 +17,11 @@ interface JsonInputPanelProps {
   value: string
   onChange: (value: string) => void
   result: ParseResult
+  /** Input sent by another tool, while it has not been changed */
+  received?: Incoming | null
 }
 
-export function JsonInputPanel({ value, onChange, result }: JsonInputPanelProps) {
+export function JsonInputPanel({ value, onChange, result, received = null }: JsonInputPanelProps) {
   const { t } = useI18n()
   const fileInput = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
@@ -116,19 +119,22 @@ export function JsonInputPanel({ value, onChange, result }: JsonInputPanelProps)
           </>
         }
         footer={
-          fileError ? (
-            <p className="json-status json-status--error" role="alert">
-              {fileError}
-            </p>
-          ) : error === null ? (
-            <p className="json-status json-status--ok">{t.inputValid}</p>
-          ) : error.code === 'empty' ? (
-            <p className="json-status">{t.jsonEmpty}</p>
-          ) : (
-            <p className="json-status json-status--error" role="alert">
-              <strong>{t.errorPosition(error.line, error.column)}</strong> · {t.jsonError(error)}
-            </p>
-          )
+          <>
+            {received && <p className="json-status">{t.receivedFrom(received)}</p>}
+            {fileError ? (
+              <p className="json-status json-status--error" role="alert">
+                {fileError}
+              </p>
+            ) : error === null ? (
+              <p className="json-status json-status--ok">{t.inputValid}</p>
+            ) : error.code === 'empty' ? (
+              <p className="json-status">{t.jsonEmpty}</p>
+            ) : (
+              <p className="json-status json-status--error" role="alert">
+                <strong>{t.errorPosition(error.line, error.column)}</strong> · {t.jsonError(error)}
+              </p>
+            )}
+          </>
         }
       >
         <CodeEditor

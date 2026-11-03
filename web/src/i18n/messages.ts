@@ -1,6 +1,9 @@
 import type { JsonErrorInfo, JsonExpected } from '../core/json.ts'
 import type { NameNote } from '../core/generators/types.ts'
 import type { SchemaWarning } from '../core/warnings.ts'
+import type { Incoming, SenderId } from '../core/incoming.ts'
+
+const SENDER_NAMES: Record<SenderId, string> = { api2data: 'Api2Data' }
 
 const EXPECTED_EN: Record<JsonExpected, string> = {
   value: 'a value',
@@ -58,6 +61,8 @@ const en = {
   fileTooLarge: (name: string) => `“${name}” is larger than 50 MB.`,
   fileError: (name: string) => `“${name}” could not be read.`,
   inputValid: 'Valid JSON',
+  receivedFrom: ({ from, source }: Incoming) =>
+    `Response received from ${SENDER_NAMES[from]}${source ? ` (${source.method} ${source.url})` : ''}.`,
   structureTitle: 'Detected structure',
   structureEmpty: 'The structure detected will appear here when the JSON is valid.',
   structureNoFields: 'No fields',
@@ -185,6 +190,7 @@ const es: Messages = {
   fileTooLarge: (name: string) => `“${name}” ocupa más de 50 MB.`,
   fileError: (name: string) => `No se ha podido leer “${name}”.`,
   inputValid: 'JSON válido',
+  receivedFrom: ({ from, source }) => `Respuesta recibida de ${SENDER_NAMES[from]}${source ? ` (${source.method} ${source.url})` : ''}.`,
   structureTitle: 'Estructura detectada',
   structureEmpty: 'La estructura detectada aparecerá aquí cuando el JSON sea válido.',
   structureNoFields: 'Sin campos',
